@@ -1,6 +1,14 @@
 // tasksManager.js
+export const nextId = (tasks) => {
+  if(tasks.length === 0) {
+    return 0;
+  } else {
+    return Math.max(...tasks.map(x => x.id)) + 1;
+  }
+}
+
 export const addTask = (tasks, text) => {
-  return [...tasks, { id: Date.now(), text, done: false }];
+  return [...tasks, { id: nextId(tasks), text, done: false }];
 };
 
 export const toggleTaskDone = (tasks, taskId) => {
