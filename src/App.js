@@ -1,5 +1,6 @@
 // import logo from './logo.svg';
 import {useState} from 'react';
+import { addTask, toggleTaskDone, deleteTask } from './core/tasksManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
@@ -7,24 +8,23 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState('');
 
-  const handleAddTask = () => {
+  const handleAddTaskUI = () => {
     if (inputValue.trim()) {
-      setTasks([...tasks, { text: inputValue, done: false }]);
-      setInputValue('');
+      const updatedTasks = addTask(inputValue);
+      setTasks([...updatedTasks]);
+      setInputValue(''); // Resetting the input value after adding the task
     }
   };
+  
+  const handleToggleDoneUI = (index) => {
+    const updatedTasks = toggleTaskDone(index);
+    setTasks([...updatedTasks]);
+};
 
-  const handleToggleDone = (index) => {
-    const newTasks = [...tasks];
-    newTasks[index].done = !newTasks[index].done;
-    setTasks(newTasks);
-  };
-
-  const handleDelete = (index) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
-    setTasks(newTasks);
-  };
+const handleDeleteUI = (index) => {
+  const updatedTasks = deleteTask(index);
+  setTasks([...updatedTasks]);
+};
   
   return (
     <div className="app">
@@ -41,19 +41,20 @@ function App() {
           onChange={(e) => setInputValue(e.target.value)}
         />
 
-        <button className="todo-button" onClick={handleAddTask}>Add</button>
+        <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
         
         <div className="todo-list">
           {tasks.map((task, index) => (
             <TodoItem 
               key={index} 
               task={task} 
-              onToggleDone={() => handleToggleDone(index)}
-              onDelete={() => handleDelete(index)}
+              onToggleDone={() => handleToggleDoneUI(index)}
+              onDelete={() => handleDeleteUI(index)}
             />
           ))}
         </div>
 
+        <div>You currently have {tasks.length} items in your list.</div>
       </div>
     </div>
   );
