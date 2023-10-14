@@ -47,7 +47,7 @@ function App() {
         <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
         
         <div className="todo-list">
-          {tasks.map((task, index) => (
+          {tasks.map(task => (
             <TodoItem 
               key={task.id} 
               task={task} 
