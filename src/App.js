@@ -30,12 +30,12 @@ function App() {
   };
   
   return (
-    <div className="app">
+    <main className="app">
       <header className="app-header">
         <h1>pwa-todo-app</h1>
       </header>
 
-      <div className="app-container">
+      <section className="app-container">
         <input 
           className="todo-input" 
           type="text" 
@@ -46,7 +46,7 @@ function App() {
 
         <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
         
-        <div className="todo-list">
+        <ul className="todo-list">
           {tasks.map(task => (
             <TodoItem 
               key={task.id} 
@@ -55,11 +55,11 @@ function App() {
               onDelete={() => handleDeleteUI(task.id)}
             />
           ))}
-        </div>
+        </ul>
 
-        <div>You currently have {tasks.length} items in your list.</div>
-      </div>
-    </div>
+        <p>You currently have {tasks.length} items in your list.</p>
+      </section>
+    </main>
   );
 }
 
