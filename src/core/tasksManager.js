@@ -1,3 +1,4 @@
+// tasksManager.js
 let tasks = [];
 
 export const addTask = (text) => {
@@ -13,4 +14,8 @@ export const toggleTaskDone = (index) => {
 export const deleteTask = (index) => {
   tasks.splice(index, 1);
   return tasks;
+};
+
+export const resetTasks = () => {
+  tasks.length = 0;  // This clears the tasks array
 };
