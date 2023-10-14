@@ -1,30 +1,33 @@
-// import logo from './logo.svg';
 import {useState} from 'react';
 import { addTask, toggleTaskDone, deleteTask } from './core/tasksManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
 function App() {
-  const [tasks, setTasks] = useState([]);
+  const initialTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+  const [tasks, setTasks] = useState(initialTasks);
   const [inputValue, setInputValue] = useState('');
 
   const handleAddTaskUI = () => {
     if (inputValue.trim()) {
-      const updatedTasks = addTask(inputValue);
-      setTasks([...updatedTasks]);
-      setInputValue(''); // Resetting the input value after adding the task
+      const updatedTasks = addTask(tasks, inputValue);
+      setTasks(updatedTasks);
+      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      setInputValue('');
     }
   };
   
   const handleToggleDoneUI = (index) => {
-    const updatedTasks = toggleTaskDone(index);
+    const updatedTasks = toggleTaskDone(tasks, index);
     setTasks([...updatedTasks]);
-};
+    localStorage.setItem('tasks', JSON.stringify([...updatedTasks]));
+  };
 
-const handleDeleteUI = (index) => {
-  const updatedTasks = deleteTask(index);
-  setTasks([...updatedTasks]);
-};
+  const handleDeleteUI = (index) => {
+    const updatedTasks = deleteTask(tasks, index);
+    setTasks([...updatedTasks]);
+    localStorage.setItem('tasks', JSON.stringify([...updatedTasks]));
+  };
   
   return (
     <div className="app">
@@ -46,10 +49,10 @@ const handleDeleteUI = (index) => {
         <div className="todo-list">
           {tasks.map((task, index) => (
             <TodoItem 
-              key={index} 
+              key={task.id} 
               task={task} 
-              onToggleDone={() => handleToggleDoneUI(index)}
-              onDelete={() => handleDeleteUI(index)}
+              onToggleDone={() => handleToggleDoneUI(task.id)}
+              onDelete={() => handleDeleteUI(task.id)}
             />
           ))}
         </div>

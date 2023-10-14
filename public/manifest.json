@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "To-Do PWA",
+  "name": "React To-Do List Progressive Web App",
   "icons": [
     {
       "src": "favicon.ico",
