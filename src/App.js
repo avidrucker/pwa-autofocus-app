@@ -50,7 +50,7 @@ function App() {
 
         <div>
           <button className="button" onClick={handleAddTaskUI}>Add</button>
-          <button className="button" onClick={handleDeleteUI}>Clear list</button>
+          <button className="button" onClick={handleDeleteUI}>Clear List</button>
           <button className="button" onClick={handleTakeActionUI}>Take Action</button>
         </div>
 
