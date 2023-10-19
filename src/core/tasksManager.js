@@ -17,6 +17,6 @@ export const toggleTaskDone = (tasks, taskId) => {
   );
 };
 
-export const deleteTask = (tasks, taskId) => {
-  return tasks.filter(task => task.id !== taskId);
+export const emptyList = () => {
+  return [];
 };

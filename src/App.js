@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import { addTask, toggleTaskDone, deleteTask } from './core/tasksManager';
+import { addTask, toggleTaskDone, emptyList } from './core/tasksManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
@@ -27,8 +27,8 @@ function App() {
     saveTasksToLocal(updatedTasks);
   };
 
-  const handleDeleteUI = (index) => {
-    const updatedTasks = deleteTask(tasks, index);
+  const handleDeleteUI = () => {
+    const updatedTasks = emptyList();
     setTasks([...updatedTasks]);
     saveTasksToLocal(updatedTasks);
   };
@@ -48,7 +48,10 @@ function App() {
           onChange={(e) => setInputValue(e.target.value)}
         />
 
+        <div>
         <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
+          <button className="delete-button" onClick={handleDeleteUI}>Clear list</button>
+        </div>
         
         <ul className="todo-list">
           {tasks.map(task => (
@@ -56,7 +59,6 @@ function App() {
               key={task.id} 
               task={task} 
               onToggleDone={() => handleToggleDoneUI(task.id)}
-              onDelete={() => handleDeleteUI(task.id)}
             />
           ))}
         </ul>

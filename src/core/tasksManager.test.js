@@ -53,21 +53,3 @@ describe('toggleTaskDone function', () => {
       expect(newTasks[0].done).toBe(false);  // Task should be marked as not done
   });
 });
-  
-describe('deleteTask function', () => {
-  test('should delete a task', () => {
-    let newTasks = [];
-    const taskText1 = "Task 1";
-    const taskText2 = "Task 2";
-    
-    newTasks = addTask(newTasks,taskText1);  // Setup: Add first task
-    newTasks = addTask(newTasks,taskText2);  // Setup: Add second task
-    
-    newTasks = deleteTask(newTasks, 0);  // Delete the first task
-    
-    // Assertions
-    expect(newTasks.length).toBe(1);  // Only one task should remain
-    expect(newTasks[0].text).toBe(taskText2);  // The remaining task should be "Task 2"
-  });
-});
-  
