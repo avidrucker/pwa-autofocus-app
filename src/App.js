@@ -8,11 +8,15 @@ function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [inputValue, setInputValue] = useState('');
 
+  const saveTasksToLocal = (tasks) => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+  };
+
   const handleAddTaskUI = () => {
     if (inputValue.trim()) {
       const updatedTasks = addTask(tasks, inputValue);
       setTasks(updatedTasks);
-      localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+      saveTasksToLocal(updatedTasks);
       setInputValue('');
     }
   };
@@ -20,13 +24,13 @@ function App() {
   const handleToggleDoneUI = (index) => {
     const updatedTasks = toggleTaskDone(tasks, index);
     setTasks([...updatedTasks]);
-    localStorage.setItem('tasks', JSON.stringify([...updatedTasks]));
+    saveTasksToLocal(updatedTasks);
   };
 
   const handleDeleteUI = (index) => {
     const updatedTasks = deleteTask(tasks, index);
     setTasks([...updatedTasks]);
-    localStorage.setItem('tasks', JSON.stringify([...updatedTasks]));
+    saveTasksToLocal(updatedTasks);
   };
   
   return (
