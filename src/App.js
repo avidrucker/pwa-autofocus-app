@@ -36,7 +36,7 @@ function App() {
   return (
     <main className="app">
       <header className="app-header">
-        <h1>pwa-todo-app</h1>
+        <h1>PWA AutoFocus App</h1>
       </header>
 
       <section className="app-container">
@@ -49,10 +49,10 @@ function App() {
         />
 
         <div>
-        <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
+          <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
           <button className="delete-button" onClick={handleDeleteUI}>Clear list</button>
         </div>
-        
+
         <ul className="todo-list">
           {tasks.map(task => (
             <TodoItem 
