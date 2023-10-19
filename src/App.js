@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import { addTask, emptyList } from './core/tasksManager';
+import { addTask, completeBenchmarkTask, emptyList } from './core/tasksManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
@@ -20,6 +20,12 @@ function App() {
       setInputValue('');
     }
   };
+
+  const handleTakeActionUI = () => {
+    const updatedTasks = completeBenchmarkTask(tasks);
+    setTasks(updatedTasks);
+    saveTasksToLocal(updatedTasks);
+  }
 
   const handleDeleteUI = () => {
     const updatedTasks = emptyList();
@@ -43,8 +49,9 @@ function App() {
         />
 
         <div>
-          <button className="todo-button" onClick={handleAddTaskUI}>Add</button>
-          <button className="delete-button" onClick={handleDeleteUI}>Clear list</button>
+          <button className="button" onClick={handleAddTaskUI}>Add</button>
+          <button className="button" onClick={handleDeleteUI}>Clear list</button>
+          <button className="button" onClick={handleTakeActionUI}>Take Action</button>
         </div>
 
         <ul className="todo-list">
