@@ -1,5 +1,5 @@
 // tasksManager.test.js
-import { addTask, nextId, completeBenchmarkTask } from './tasksManager';
+import { addTask, nextId, completeBenchmarkTask, isPrioritizableList } from './tasksManager';
 
 describe('nextId function', () => {
   test('should return 0 for an empty tasks list', () => {
@@ -55,7 +55,33 @@ describe('completeBenchmarkTask function', () => {
                   {"id": 2, "text": "c", "status": "new"}];
     const updatedTasks = completeBenchmarkTask(tasks);
     expect(updatedTasks).toStrictEqual([{"id": 0, "text": "a", "status": "done"},
-                              {"id": 1, "text": "b", "status": "done"},
-                              {"id": 2, "text": "c", "status": "ready"}]);
+                                        {"id": 1, "text": "b", "status": "done"},
+                                        {"id": 2, "text": "c", "status": "ready"}]);
+  });
+});
+
+describe('isPrioritizableList function', () => {
+  test('should correctly identify prioritizable list of 2 items', () => {
+    const tasks = [{ id: 3, text: 'task1', status: "ready" },
+                  { id: 5, text: 'task2', status: "new" }];
+    expect(isPrioritizableList(tasks)).toBe(true);
+  });
+
+  test('should correctly identify priorizable list of 3 items', () => {
+    const tasks = [{"id": 0, "text": "a", "status": "done"},
+                  {"id": 1, "text": "b", "status": "ready"},
+                  {"id": 2, "text": "c", "status": "new"}];
+    expect(isPrioritizableList(tasks)).toBe(true);
+  });
+
+  test('should correctly identify non-priorizable list of 2 items', () => {
+    const tasks = [{"id":0,"text":"a","status":"done"},
+                  {"id":1,"text":"b","status":"ready"}];
+    expect(isPrioritizableList(tasks)).toBe(false);
+  });
+
+  test('should correctly identify non-priorizable list of 0 items', () => {
+    const tasks = [];
+    expect(isPrioritizableList(tasks)).toBe(false);
   });
 });
