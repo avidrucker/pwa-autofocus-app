@@ -18,6 +18,7 @@ function App() {
     if(cursor === -1) {
       setIsPrioritizing(false);
     }
+    // eslint-disable-next-line
   }, [cursor]);
 
   useEffect(() => {
@@ -27,6 +28,7 @@ function App() {
     } else {
       setCursor(-1);
     }
+    // eslint-disable-next-line
   }, [isPrioritizing])
 
   const saveTasksToLocal = (tasks) => {
