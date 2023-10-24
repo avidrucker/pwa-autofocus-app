@@ -29,8 +29,21 @@ const automark = (tasks) => {
 }
 
 // actionable lists have at least 1 ready status item
-const isActionableList = (tasks) => {
+export const isActionableList = (tasks) => {
   return hasReady(tasks);
+}
+
+// a prioritizable list has at least one ready item and at least one new item after the last ready item
+export const isPrioritizableList = (tasks) => {
+  if(tasks.length === 0 || tasks.length === 1)
+    return false;
+  if(!hasReady(tasks))
+    return false;
+  if(!hasNew(tasks))
+    return false;
+  const lastReadyItem = tasks.filter(x => x.status === "ready").at(-1);
+  const lastNewItem = tasks.filter(x => x.status === "new").at(-1);
+  return lastNewItem.id > lastReadyItem.id;
 }
 
 export const completeBenchmarkTask = (tasks) => {
@@ -52,3 +65,38 @@ export const addTask = (tasks, text) =>
     { id: nextId(tasks), text, status: hasReady(tasks) ? "new" : "ready" }];
 
 export const emptyList = () => [];
+
+// the initial prioritization session cursor starts at the first new item after the benchmark item
+export const getInitialCursor = (tasks) => {
+  const lastReadyItem = tasks.filter(x => x.status === "ready").at(-1);
+  const lastReadyIndex = tasks.indexOf(lastReadyItem);
+  const slicedList = tasks.slice(lastReadyIndex);
+  const firstNewItem = slicedList.filter(x => x.status === "new").at(0);
+  const firstNewAfterReadyIndex = tasks.indexOf(firstNewItem);
+  return firstNewAfterReadyIndex;
+}
+
+// first new item after the cursor
+export const nextCursor = (tasks, currentCursor) => {
+  const slicedList = tasks.slice(currentCursor);
+  const firstNewItem = slicedList.filter(x => x.status === "new").at(0);
+  if(firstNewItem) {
+    return tasks.indexOf(firstNewItem);
+  } else {
+    return -1; // indicates secondNewItem not found
+  }
+}
+
+const questionString = (benchmarkItemText, cursorItemText) =>
+  `Do you want to '${cursorItemText}' more than '${benchmarkItemText}'?`;
+
+export const genQuestion = (tasks, cursor) => {
+  const cursorItem = tasks[cursor];
+  const benchmarkItem = tasks.filter(x => x.status === "ready").at(-1);
+  return questionString(benchmarkItem.text, cursorItem.text);
+}
+
+export const markReadyAtIndex = (tasks, cursor) => {
+  tasks[cursor].status = "ready";
+  return tasks;
+}
