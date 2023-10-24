@@ -96,10 +96,10 @@ function App() {
         />
 
         <div>
-          <button disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button>
-          <button disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button>
-          <button disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button>
-          <button disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button>
+          <button className="button" disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button>
+          <button className="button" disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button>
+          <button className="button" disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button>
+          <button className="button" disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button>
         </div>
 
         <ul className="todo-list">
