@@ -86,21 +86,24 @@ function App() {
       </header>
 
       <section className="app-container">
-        <input 
-          disabled={isPrioritizing}
-          className="todo-input" 
-          type="text" 
-          placeholder="Add a task..." 
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-        />
+        <form>
+          <input 
+            id="todo-input"
+            disabled={isPrioritizing}
+            className="todo-input" 
+            type="text" 
+            placeholder="Add a task..." 
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+          />
 
-        <div>
-          <button className="button" disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button>
-          <button className="button" disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button>
-          <button className="button" disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button>
-          <button className="button" disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button>
-        </div>
+          <div>
+            <button type="submit" className="button" disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button>
+            <button type="button" className="button" disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button>
+            <button type="button" className="button" disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button>
+            <button type="button" className="button" disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button>
+          </div>
+        </form>
 
         <ul className="todo-list">
           {tasks.map(task => (
