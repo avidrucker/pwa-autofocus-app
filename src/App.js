@@ -80,32 +80,34 @@ function App() {
   }
   
   return (
-    <main className="app">
-      <header className="app-header">
-        <h1>PWA AutoFocus App</h1>
+    <main className="app flex flex-column tc f5 montserrat">
+      <header className="app-header pa3">
+        <h1 className="ma0 f2 fw8">PWA AutoFocus App</h1>
       </header>
 
-      <section className="app-container">
-        <form>
+      <section className="app-container ph3">
+        <form className="">
+          <div className="measure ml-auto mr-auto">
           <input 
             id="todo-input"
             disabled={isPrioritizing}
-            className="todo-input" 
+            className="todo-input pa2 w-100 input-reset br3" 
             type="text" 
             placeholder="Add a task..." 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
+          </div>
 
-          <div>
-            <button type="submit" className="button" disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button>
-            <button type="button" className="button" disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button>
-            <button type="button" className="button" disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button>
-            <button type="button" className="button" disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button>
+          <div className="pv3 flex justify-center flex-wrap measure ml-auto mr-auto">
+            <div className="ma1"><button type="submit" className="button-reset pointer pa2" disabled={isPrioritizing || inputValue === ""} onClick={handleAddTaskUI}>Add</button></div>
+            <div className="ma1"><button type="button" className="button-reset pointer pa2" disabled={isPrioritizing || tasks.length === 0} onClick={handleDeleteUI}>Clear List</button></div>
+            <div className="ma1"><button type="button" className="button-reset pointer pa2" disabled={!isPrioritizableList(tasks)} onClick={handlePrioritizeUI}>Prioritize List</button></div>
+            <div className="ma1"><button type="button" className="button-reset pointer pa2" disabled={isPrioritizing || !isActionableList(tasks)} onClick={handleTakeActionUI}>Take Action</button></div>
           </div>
         </form>
 
-        <ul className="todo-list">
+        <ul className="todo-list ma0 pv2 tl measure ml-auto mr-auto">
           {tasks.map(task => (
             <TodoItem 
               key={task.id} 
@@ -114,7 +116,7 @@ function App() {
           ))}
         </ul>
 
-        <p>{`You currently have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}</p>
+        <p className="ma0 pt3">{`You currently have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}</p>
 
         {isPrioritizing && 
           <div>
