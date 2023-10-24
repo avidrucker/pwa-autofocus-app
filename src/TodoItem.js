@@ -2,8 +2,9 @@ import React from 'react';
 
 function TodoItem({ task }) {
   return (
-    <li style={{textDecoration: task.status === "done" && "line-through",
-                fontWeight: task.status === "ready" ? "900" : "500"}}>
+    <li className={`${task.status === "done"
+       && "strike"} ${task.status === "ready" ? 
+       "fw6" : "fw4"}`}>
       <span>{task.text}</span>
     </li>
   );
