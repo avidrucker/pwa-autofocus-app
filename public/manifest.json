@@ -1,6 +1,7 @@
 {
   "short_name": "To-Do PWA",
   "name": "React To-Do List Progressive Web App",
+  "id": "/pwa-autofocus-app/",
   "icons": [
     {
       "src": "favicon.ico",
