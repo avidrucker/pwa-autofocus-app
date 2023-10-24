@@ -111,7 +111,7 @@ function App() {
           ))}
         </ul>
 
-        <p>You currently have {tasks.length} items in your list.</p>
+        <p>{`You currently have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}</p>
 
         {isPrioritizing && 
           <div>
