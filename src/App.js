@@ -147,7 +147,7 @@ function App() {
         {/*prioritization review modal*/}
         {isPrioritizing && 
           <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
-            <p>{cursor !== -1 && genQuestion(tasks, cursor)}</p>
+            <p className="ph3 lh-copy">{cursor !== -1 && genQuestion(tasks, cursor)}</p>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handlePrioritizeUI}>Quit</button>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
