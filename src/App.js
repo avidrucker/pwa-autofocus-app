@@ -46,7 +46,7 @@ function App() {
 
   const handlePrioritizeUI = () => {
     if(isPrioritizableList(tasks)) {
-    setIsPrioritizing(!isPrioritizing);
+      setIsPrioritizing(!isPrioritizing);
       setErrMsg("");
     } else {
       setErrMsg("This list isn't prioritizable right now. Prioritizable lists have one or more new items at the end of the list.");
@@ -69,18 +69,18 @@ function App() {
     if(!isActionableList(tasks)) {
       setErrMsg("There are no actionable tasks in your list.");
     } else {
-    const updatedTasks = completeBenchmarkTask(tasks);
-    setTasks(updatedTasks);
-    saveTasksToLocal(updatedTasks);
+      const updatedTasks = completeBenchmarkTask(tasks);
+      setTasks(updatedTasks);
+      saveTasksToLocal(updatedTasks);
       setErrMsg("");
     }
   }
 
   const handleDeleteUI = () => {
     if(tasks.length !== 0) {
-    const updatedTasks = emptyList();
-    setTasks([...updatedTasks]);
-    saveTasksToLocal(updatedTasks);
+      const updatedTasks = emptyList();
+      setTasks([...updatedTasks]);
+      saveTasksToLocal(updatedTasks);
       setErrMsg("");
     } else {
       setErrMsg("There are no tasks to clear.");
@@ -108,18 +108,18 @@ function App() {
         <form className="ph3">
           <div>
             <div className="measure-narrow ml-auto mr-auto">
-            <input 
-              id="todo-input"
-              disabled={isPrioritizing}
-              className="todo-input pa2 w-100 input-reset br3" 
-              type="text" 
-              placeholder="Add a task..." 
-              value={inputValue}
-              onChange={(e) => {
-                setInputValue(e.target.value);
-                setErrMsg("");
-              }}
-            />
+              <input 
+                id="todo-input"
+                disabled={isPrioritizing}
+                className="todo-input pa2 w-100 input-reset br3" 
+                type="text" 
+                placeholder="Add a task..." 
+                value={inputValue}
+                onChange={(e) => {
+                  setInputValue(e.target.value);
+                  setErrMsg("");
+                }}
+              />
             </div>
           </div>
 
@@ -149,17 +149,17 @@ function App() {
 
           </div>
         </form>
-
+        
         {tasks.length > 0 && <div className="ph3 pb3">
           <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
-          {tasks.map(task => (
-            <TodoItem 
-              key={task.id} 
-              task={task} 
+            {tasks.map(task => (
+              <TodoItem 
+                key={task.id} 
+                task={task} 
                 isBenchmark={benchmarkItem(tasks) !== null && benchmarkItem(tasks).id === task.id}
-            />
-          ))}
-        </ul>
+              />
+            ))}
+          </ul>
         </div>}
 
         <div className="ph3 pb3">
