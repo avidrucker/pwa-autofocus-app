@@ -106,7 +106,8 @@ function App() {
 
       <section className="app-container relative">
         <form className="ph3">
-          <div className="measure ml-auto mr-auto">
+          <div>
+            <div className="measure-narrow ml-auto mr-auto">
             <input 
               id="todo-input"
               disabled={isPrioritizing}
@@ -119,6 +120,7 @@ function App() {
                 setErrMsg("");
               }}
             />
+            </div>
           </div>
 
           {errMsg && <p className="lh-copy red ma0 pt3 ph3">{errMsg}</p>}
@@ -148,7 +150,8 @@ function App() {
           </div>
         </form>
 
-        <ul className="todo-list list ma0 pv2 tl measure ml-auto mr-auto">
+        {tasks.length > 0 && <div className="ph3 pb3">
+          <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
           {tasks.map(task => (
             <TodoItem 
               key={task.id} 
