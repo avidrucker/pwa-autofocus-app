@@ -86,7 +86,7 @@ function App() {
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
       <header className="app-header pa3">
-        <h1 className="ma0 f2 fw8">PWA AutoFocus App</h1>
+        <h1 className="ma0 f2 fw8 tracked-custom">AutoFocus</h1>
       </header>
 
       <section className="app-container relative">
