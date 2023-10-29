@@ -160,8 +160,17 @@ function App() {
             />
           ))}
         </ul>
+        </div>}
 
-        <p className="ma0 pv3">{`You currently have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}</p>
+        <div className="ph3 pb3">
+          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy">
+            {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
+          </p>
+
+          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy">
+            {(benchmarkItem(tasks) !== null) && `The next actionable item is '${benchmarkItem(tasks).text}'.`}
+          </p>
+        </div>
 
         {/*prioritization review modal*/}
         {isPrioritizing && 
