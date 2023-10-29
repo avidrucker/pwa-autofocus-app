@@ -96,7 +96,7 @@ export const nextCursor = (tasks, currentCursor) => {
 }
 
 const questionString = (benchmarkItemText, cursorItemText) =>
-  `Do you want to '${cursorItemText}' more than '${benchmarkItemText}'?`;
+  `In this moment, are you more ready to '${cursorItemText}' than '${benchmarkItemText}'?`;
 
 export const genQuestion = (tasks, cursor) => {
   const cursorItem = tasks[cursor];
