@@ -126,22 +126,22 @@ function App() {
           <div className="pv3 flex justify-center flex-wrap measure ml-auto mr-auto">
             
             <div className="ma1"><button type="submit" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-80' : 'pointer'}`} 
+              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
               disabled={isPrioritizing} 
               onClick={handleAddTaskUI}>Add Task</button></div>
             
             <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing && 'o-80'} ${tasks.length !== 0 && 'pointer'}`} 
+              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
               disabled={isPrioritizing} 
               onClick={handleDeleteUI}>Clear List</button></div>
             
             <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer' : 'o-80'}`} 
+              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
               disabled={isPrioritizing} 
               onClick={handlePrioritizeUI}>Prioritize List</button></div>
             
             <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing && 'o-80'} ${isActionableList(tasks) && 'pointer'}`} 
+              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
               disabled={isPrioritizing} 
               onClick={handleTakeActionUI}>Take Action</button></div>
 
