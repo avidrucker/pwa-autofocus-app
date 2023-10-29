@@ -77,9 +77,14 @@ function App() {
   }
 
   const handleDeleteUI = () => {
+    if(tasks.length !== 0) {
     const updatedTasks = emptyList();
     setTasks([...updatedTasks]);
     saveTasksToLocal(updatedTasks);
+      setErrMsg("");
+    } else {
+      setErrMsg("There are no tasks to clear.");
+    }
   };
 
   const handleNoUI = () => {
