@@ -12,12 +12,10 @@ const filledCircle = <svg fill="currentColor" viewBox="0 0 512 512" width="1.25r
 <path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8z"></path>
 </svg>;
 
-function TodoItem({ task }) {
+function TodoItem({ task, isBenchmark }) {
   return (
     <li className={`flex lh-copy align-start ${task.status === "done"
-       && "strike"} ${task.status === "ready" ? 
-       "fw6" : "fw4"}`}>
-      <span className="mr1">{task.status === "done" ? 
+       && "o-50"} ${isBenchmark ? "fw6" : "fw4"}`}>
                 filledCircle :
                 task.status === "ready" ? 
                     dotCircle : emptyCircle}</span>

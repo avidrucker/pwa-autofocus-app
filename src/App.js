@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import { addTask, completeBenchmarkTask, emptyList, isActionableList, 
+import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList, 
   isPrioritizableList, genQuestion, getInitialCursor, markReadyAtIndex, nextCursor } from './core/tasksManager';
 import TodoItem from './TodoItem';
 import './App.css';
@@ -153,6 +153,7 @@ function App() {
             <TodoItem 
               key={task.id} 
               task={task} 
+                isBenchmark={benchmarkItem(tasks) !== null && benchmarkItem(tasks).id === task.id}
             />
           ))}
         </ul>

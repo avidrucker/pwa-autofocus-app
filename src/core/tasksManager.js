@@ -12,6 +12,14 @@ const hasNew = (tasks) =>
 const hasReady = (tasks) =>
   tasks.filter(x => x.status === "ready").length > 0;
 
+// the benchmark item, also called the priority item, 
+// is the last ready item in a list
+export const benchmarkItem = (tasks) => {
+  if(!hasReady(tasks)) return null;
+
+  return tasks.filter(x => x.status === "ready").at(-1);
+}
+
 // An automarkable list has new items and has no ready items. 
 const isAutoMarkableList = (tasks) => {
   return hasNew(tasks) && !hasReady(tasks);
