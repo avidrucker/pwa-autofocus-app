@@ -66,9 +66,14 @@ function App() {
   };
 
   const handleTakeActionUI = () => {
+    if(!isActionableList(tasks)) {
+      setErrMsg("There are no actionable tasks in your list.");
+    } else {
     const updatedTasks = completeBenchmarkTask(tasks);
     setTasks(updatedTasks);
     saveTasksToLocal(updatedTasks);
+      setErrMsg("");
+    }
   }
 
   const handleDeleteUI = () => {
