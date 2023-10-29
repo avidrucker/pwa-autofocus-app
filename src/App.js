@@ -61,7 +61,7 @@ function App() {
       saveTasksToLocal(updatedTasks);
       setInputValue('');
     } else {
-      setErrMsg("New items cannot be empty or whitespace only, please type some text into the text input above");
+      setErrMsg("New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.");
     }
   };
 
