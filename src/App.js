@@ -132,17 +132,17 @@ function App() {
             
             <div className="ma1"><button type="button" 
               className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing && 'o-80'} ${tasks.length !== 0 && 'pointer'}`} 
-              disabled={isPrioritizing || tasks.length === 0} 
+              disabled={isPrioritizing} 
               onClick={handleDeleteUI}>Clear List</button></div>
             
             <div className="ma1"><button type="button" 
               className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer' : 'o-80'}`} 
-              disabled={!isPrioritizableList(tasks) || isPrioritizing} 
+              disabled={isPrioritizing} 
               onClick={handlePrioritizeUI}>Prioritize List</button></div>
             
             <div className="ma1"><button type="button" 
               className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing && 'o-80'} ${isActionableList(tasks) && 'pointer'}`} 
-              disabled={isPrioritizing || !isActionableList(tasks)} 
+              disabled={isPrioritizing} 
               onClick={handleTakeActionUI}>Take Action</button></div>
 
           </div>
