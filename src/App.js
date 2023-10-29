@@ -128,7 +128,7 @@ function App() {
             <div className="ma1"><button type="submit" 
               className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-80' : 'pointer'}`} 
               disabled={isPrioritizing} 
-              onClick={handleAddTaskUI}>Add</button></div>
+              onClick={handleAddTaskUI}>Add Task</button></div>
             
             <div className="ma1"><button type="button" 
               className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing && 'o-80'} ${tasks.length !== 0 && 'pointer'}`} 
