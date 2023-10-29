@@ -45,7 +45,12 @@ function App() {
   };
 
   const handlePrioritizeUI = () => {
+    if(isPrioritizableList(tasks)) {
     setIsPrioritizing(!isPrioritizing);
+      setErrMsg("");
+    } else {
+      setErrMsg("This list isn't prioritizable right now. Prioritizable lists have one or more new items at the end of the list.");
+    }
   };
 
   const handleAddTaskUI = (e) => {
