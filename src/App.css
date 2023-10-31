@@ -9,3 +9,7 @@
 .tracked-custom {
     letter-spacing: .05em;
 }
+
+.balance {
+    text-wrap: balance;
+}
