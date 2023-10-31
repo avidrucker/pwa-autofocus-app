@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList, 
-  isPrioritizableList, genQuestion, getInitialCursor, markReadyAtIndex, nextCursor } from './core/tasksManager';
+  isPrioritizableList, genQuestion, getInitialCursor } from './core/tasksManager';
+import { startReview, handleReviewDecision } from './core/reviewManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
@@ -45,11 +46,13 @@ function App() {
   };
 
   const handlePrioritizeUI = () => {
-    if(isPrioritizableList(tasks)) {
-      setIsPrioritizing(!isPrioritizing);
-      setErrMsg("");
+    const result = startReview(tasks);
+    if (result.error) {
+        setErrMsg(result.error);
     } else {
-      setErrMsg("This list isn't prioritizable right now. Prioritizable lists have one or more new items at the end of the list.");
+        setIsPrioritizing(!isPrioritizing);
+        setCursor(result.cursor);
+        setErrMsg("");
     }
   };
 
@@ -88,14 +91,21 @@ function App() {
   };
 
   const handleNoUI = () => {
-    setCursor(nextCursor(tasks, cursor + 1));
+    const result = handleReviewDecision(tasks, cursor, "No");
+    setCursor(result.cursor);
   }
 
   const handleYesUI = () => {
-    const updatedTasks = markReadyAtIndex(tasks, cursor);
-    setCursor(nextCursor(tasks, cursor));
-    setTasks([...updatedTasks]);
-    saveTasksToLocal(updatedTasks);
+    const result = handleReviewDecision(tasks, cursor, "Yes");
+    setCursor(result.cursor);
+    setTasks([...result.tasks]);
+    saveTasksToLocal(result.tasks);
+  }
+
+  const handleQuitUI = () => {
+    const result = handleReviewDecision(tasks, cursor, "Quit");
+    setCursor(result.cursor);
+    setIsPrioritizing(false);
   }
   
   return (
