@@ -135,28 +135,31 @@ function App() {
 
           {errMsg && <p className="lh-copy red ma0 pt3 ph3">{errMsg}</p>}
 
-          <div className="pv3 flex justify-center flex-wrap measure ml-auto mr-auto">
+          <div className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             
-            <div className="ma1"><button type="submit" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
-              disabled={isPrioritizing} 
-              onClick={handleAddTaskUI}>Add Task</button></div>
+            <div className="dib">
+              <div className="ma1 dib"><button type="submit" 
+                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
+                disabled={isPrioritizing} 
+                onClick={handleAddTaskUI}>Add Task</button></div>
+              
+              <div className="ma1 dib"><button type="button" 
+                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
+                disabled={isPrioritizing} 
+                onClick={handleDeleteUI}>Clear List</button></div>
+            </div>
             
-            <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
-              disabled={isPrioritizing} 
-              onClick={handleDeleteUI}>Clear List</button></div>
-            
-            <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-              disabled={isPrioritizing} 
-              onClick={handlePrioritizeUI}>Prioritize List</button></div>
-            
-            <div className="ma1"><button type="button" 
-              className={`br3 fw6 bn button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-              disabled={isPrioritizing} 
-              onClick={handleTakeActionUI}>Take Action</button></div>
-
+            <div className="dib">
+              <div className="ma1 dib"><button type="button" 
+                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                disabled={isPrioritizing} 
+                onClick={handlePrioritizeUI}>Prioritize List</button></div>
+              
+              <div className="ma1 dib"><button type="button" 
+                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                disabled={isPrioritizing} 
+                onClick={handleTakeActionUI}>Take Action</button></div>
+            </div>
           </div>
         </form>
         
@@ -187,7 +190,7 @@ function App() {
           <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
             <p className="ph3 lh-copy">{cursor !== -1 && genQuestion(tasks, cursor)}</p>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
-                    onClick={handlePrioritizeUI}>Quit</button>
+                    onClick={handleQuitUI}>Quit</button>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleNoUI}>No</button>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
