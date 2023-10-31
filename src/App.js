@@ -127,7 +127,7 @@ function App() {
               <input 
                 id="todo-input"
                 disabled={isPrioritizing}
-                className="todo-input pa2 w-100 input-reset br3" 
+                className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray" 
                 type="text" 
                 placeholder="Add a task..." 
                 value={inputValue}
@@ -139,30 +139,36 @@ function App() {
             </div>
           </div>
 
-          {errMsg && <p className="lh-copy red ma0 pt3 ph3">{errMsg}</p>}
+          {errMsg && <p className="lh-copy red ma0 pt3 ph3 balance">{errMsg}</p>}
 
           <div className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
-                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
                 disabled={isPrioritizing} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing} 
                 onClick={handleToggleDeleteModal}>Clear List</button></div>
             </div>
-            
+            className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
+                disabled={isPrioritizing} 
+                onClick={handleAddTaskUI}>Add Task</button></div>
+              
+              <div className="ma1 dib"><button type="button" 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
+                disabled={isPri
             <div className="dib">
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
             </div>
@@ -182,11 +188,11 @@ function App() {
         </div>}
 
         <div className="ph3 pb3">
-          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy">
+          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
           </p>
 
-          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy">
+          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
             {(benchmarkItem(tasks) !== null) && `The next actionable item is '${benchmarkItem(tasks).text}'.`}
           </p>
         </div>
@@ -194,12 +200,12 @@ function App() {
         {/*prioritization review modal*/}
         {isPrioritizing && 
           <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
-            <p className="ph3 lh-copy">{cursor !== -1 && genQuestion(tasks, cursor)}</p>
-            <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
+            <p className="ph3 lh-copy balance">{cursor !== -1 && genQuestion(tasks, cursor)}</p>
+            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleQuitUI}>Quit</button>
-            <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
+            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleNoUI}>No</button>
-            <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
+            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleYesUI}>Yes</button>
           </div>}
 
