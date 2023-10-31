@@ -14,6 +14,7 @@ function App() {
   const initialCursor = JSON.parse(localStorage.getItem('cursor') || -1);
   const [cursor, setCursor] = useState(initialCursor);
   const [errMsg, setErrMsg] = useState("");
+  const [showingDeleteModal, setShowingDeleteModal] = useState(false);
 
   useEffect(()=>{
     saveCursorToLocal();
@@ -80,14 +81,11 @@ function App() {
   }
 
   const handleDeleteUI = () => {
-    if(tasks.length !== 0) {
-      const updatedTasks = emptyList();
-      setTasks([...updatedTasks]);
-      saveTasksToLocal(updatedTasks);
-      setErrMsg("");
-    } else {
-      setErrMsg("There are no tasks to clear.");
-    }
+    const updatedTasks = emptyList();
+    setTasks([...updatedTasks]);
+    saveTasksToLocal(updatedTasks);
+    setErrMsg("");
+    setShowingDeleteModal(false);
   };
 
   const handleNoUI = () => {
@@ -106,6 +104,14 @@ function App() {
     const result = handleReviewDecision(tasks, cursor, "Quit");
     setCursor(result.cursor);
     setIsPrioritizing(false);
+  }
+
+  const handleToggleDeleteModal = () => {
+    if(tasks.length === 0) {
+      setErrMsg("There are no tasks to clear.");
+    } else {
+      setShowingDeleteModal(!showingDeleteModal); 
+    }
   }
   
   return (
@@ -146,7 +152,7 @@ function App() {
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 bn button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing} 
-                onClick={handleDeleteUI}>Clear List</button></div>
+                onClick={handleToggleDeleteModal}>Clear List</button></div>
             </div>
             
             <div className="dib">
@@ -195,6 +201,15 @@ function App() {
                     onClick={handleNoUI}>No</button>
             <button className="br3 w3 fw6 bn button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleYesUI}>Yes</button>
+          </div>}
+
+          {showingDeleteModal &&
+          <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
+            <p className="ph3 lh-copy balance">Are you sure you want to delete your list?</p>
+            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+                    onClick={handleToggleDeleteModal}>No</button>
+            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+                    onClick={handleDeleteUI}>Yes</button>
           </div>}
       </section>
     </main>
