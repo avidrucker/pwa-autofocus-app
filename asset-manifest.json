@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/pwa-autofocus-app/static/css/main.bc0e3a5e.css",
-    "main.js": "/pwa-autofocus-app/static/js/main.f22947de.js",
+    "main.css": "/pwa-autofocus-app/static/css/main.e959f28b.css",
+    "main.js": "/pwa-autofocus-app/static/js/main.a5be4b22.js",
     "static/js/787.330910d3.chunk.js": "/pwa-autofocus-app/static/js/787.330910d3.chunk.js",
     "index.html": "/pwa-autofocus-app/index.html",
-    "main.bc0e3a5e.css.map": "/pwa-autofocus-app/static/css/main.bc0e3a5e.css.map",
-    "main.f22947de.js.map": "/pwa-autofocus-app/static/js/main.f22947de.js.map",
+    "main.e959f28b.css.map": "/pwa-autofocus-app/static/css/main.e959f28b.css.map",
+    "main.a5be4b22.js.map": "/pwa-autofocus-app/static/js/main.a5be4b22.js.map",
     "787.330910d3.chunk.js.map": "/pwa-autofocus-app/static/js/787.330910d3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.bc0e3a5e.css",
-    "static/js/main.f22947de.js"
+    "static/css/main.e959f28b.css",
+    "static/js/main.a5be4b22.js"
   ]
 }
