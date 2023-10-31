@@ -141,8 +141,7 @@ function App() {
 
           {errMsg && <p className="lh-copy red ma0 pt3 ph3 balance">{errMsg}</p>}
 
-          <div className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
-            
+          <section className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
@@ -154,13 +153,7 @@ function App() {
                 disabled={isPrioritizing} 
                 onClick={handleToggleDeleteModal}>Clear List</button></div>
             </div>
-            className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
-                disabled={isPrioritizing} 
-                onClick={handleAddTaskUI}>Add Task</button></div>
-              
-              <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPri
+
             <div className="dib">
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
@@ -172,7 +165,7 @@ function App() {
                 disabled={isPrioritizing} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
             </div>
-          </div>
+          </section>
         </form>
         
         {tasks.length > 0 && <div className="ph3 pb3">
