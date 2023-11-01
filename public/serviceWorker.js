@@ -1,8 +1,8 @@
 // This is the "service worker" which can intercept network requests.
 const URLs_TO_CACHE = [
-    '/',
-    '/index.html',
-    '/manifest.json',
+    `${process.env.PUBLIC_URL}/`,
+    `${process.env.PUBLIC_URL}/index.html`,
+    `${process.env.PUBLIC_URL}/manifest.json`,
     // Add other URLs, e.g., stylesheets, scripts, images, etc.
   ];
 
