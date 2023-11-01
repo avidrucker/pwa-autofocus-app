@@ -1,8 +1,8 @@
 // This is the "service worker" which can intercept network requests.
 const URLs_TO_CACHE = [
-    `${process.env.PUBLIC_URL}/`,
-    `${process.env.PUBLIC_URL}/index.html`,
-    `${process.env.PUBLIC_URL}/manifest.json`,
+    `/pwa-autofocus-app/`,
+    `/pwa-autofocus-app/index.html`,
+    `/pwa-autofocus-app/manifest.json`,
     // Add other URLs, e.g., stylesheets, scripts, images, etc.
   ];
 
