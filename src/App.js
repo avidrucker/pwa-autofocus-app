@@ -1,7 +1,6 @@
 import {useState, useEffect} from 'react';
-import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList, 
-  isPrioritizableList, genQuestion, getInitialCursor } from './core/tasksManager';
-import { startReview, handleReviewDecision } from './core/reviewManager';
+import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
+import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
 import TodoItem from './TodoItem';
 import './App.css';
 
@@ -191,9 +190,9 @@ function App() {
         </div>
 
         {/*prioritization review modal*/}
-        {isPrioritizing && 
+        {(isPrioritizing && cursor !== -1 && cursor < tasks.length) && 
           <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
-            <p className="ph3 lh-copy balance">{cursor !== -1 && genQuestion(tasks, cursor)}</p>
+            <p className="ph3 lh-copy balance">{genQuestion(tasks, cursor)}</p>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleQuitUI}>Quit</button>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"

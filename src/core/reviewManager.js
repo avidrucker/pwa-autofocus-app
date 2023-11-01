@@ -1,5 +1,62 @@
-import { isPrioritizableList, getInitialCursor, 
-    markReadyAtIndex, nextCursor } from './tasksManager';
+import { hasReady, hasNew } from './taskUtils';
+
+const questionString = (benchmarkItemText, cursorItemText) =>
+    `In this moment, are you more ready to '${cursorItemText}' than '${benchmarkItemText}'?`;
+  
+export const genQuestion = (tasks, cursor) => {
+    if(cursor === -1 || cursor >= tasks.length) {
+        return "Review question cannot be generated because there is no valid cursor.";
+    }
+    
+    const cursorItem = tasks[cursor];
+    const benchmarkItem = tasks.filter(x => x.status === "ready").at(-1);
+
+    if (!benchmarkItem) {
+        return "Review question cannot be generated because there is no benchmark item to compare against.";
+    }
+
+    return questionString(benchmarkItem.text, cursorItem.text);
+};
+
+// a prioritizable list has at least one ready item and 
+// at least one new item after the last ready item
+export const isPrioritizableList = (tasks) => {
+    if (tasks.length <= 1) return false;
+    if (!hasReady(tasks) || !hasNew(tasks)) return false;
+
+    const lastReadyItem = tasks.filter(x => x.status === "ready").at(-1);
+    const lastNewItem = tasks.filter(x => x.status === "new").at(-1);
+
+    return lastNewItem.id > lastReadyItem.id;
+  }
+
+// the initial prioritization session cursor starts at the first new item after the benchmark item
+export const getInitialCursor = (tasks) => {
+    const lastReadyItem = tasks.filter(x => x.status === "ready").at(-1);
+    const lastReadyIndex = tasks.indexOf(lastReadyItem);
+    const slicedList = tasks.slice(lastReadyIndex);
+    const firstNewItem = slicedList.filter(x => x.status === "new").at(0);
+    const firstNewAfterReadyIndex = tasks.indexOf(firstNewItem);
+    return firstNewAfterReadyIndex;
+};
+
+// first new item after the cursor
+export const nextCursor = (tasks, currentCursor) => {
+    const slicedList = tasks.slice(currentCursor);
+    const firstNewItem = slicedList.filter(x => x.status === "new").at(0);
+    if(firstNewItem) {
+      return tasks.indexOf(firstNewItem);
+    } else {
+      return -1; // indicates secondNewItem not found
+    }
+};
+
+export const markReadyAtIndex = (tasks, cursor) => {
+    const updatedTasks = tasks.map((task, index) => 
+      index === cursor ? { ...task, status: "ready" } : task
+    );
+    return updatedTasks;
+  };
 
 export const startReview = (tasks) => {
     // check is task list prioritizable
