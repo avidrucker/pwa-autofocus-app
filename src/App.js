@@ -1,19 +1,23 @@
 import {useState, useEffect} from 'react';
 import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
 import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
+import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
+import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import TodoItem from './TodoItem';
 import './App.css';
 
+
 function App() {
-  const initialTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+  const initialTasks = getFromLocalStorage('tasks', []);
   const [tasks, setTasks] = useState(initialTasks);
   const [inputValue, setInputValue] = useState('');
-  const initialPrioritizing = JSON.parse(localStorage.getItem('isPrioritizing') || false);
+  const initialPrioritizing = getFromLocalStorage('isPrioritizing', false);
   const [isPrioritizing, setIsPrioritizing] = useState(initialPrioritizing);
-  const initialCursor = JSON.parse(localStorage.getItem('cursor') || -1);
+  const initialCursor = getFromLocalStorage('cursor', -1);
   const [cursor, setCursor] = useState(initialCursor);
   const [errMsg, setErrMsg] = useState("");
   const [showingDeleteModal, setShowingDeleteModal] = useState(false);
+  const [showingMoreInfo, setShowingMoreInfo] = useState(false);
 
   useEffect(()=>{
     saveCursorToLocal();
@@ -34,15 +38,15 @@ function App() {
   }, [isPrioritizing])
 
   const saveTasksToLocal = (tasks) => {
-    localStorage.setItem('tasks', JSON.stringify(tasks));
+    saveToLocalStorage('tasks', tasks);
   };
 
   const saveCursorToLocal = () => {
-    localStorage.setItem('cursor', JSON.stringify(cursor));
+    saveToLocalStorage('cursor', cursor);
   };
 
   const saveIsPrioritizingToLocal = () => {
-    localStorage.setItem('isPrioriziting', JSON.stringify(isPrioritizing));
+    saveToLocalStorage('isPrioritizing', isPrioritizing);
   };
 
   const handlePrioritizeUI = () => {
@@ -112,11 +116,57 @@ function App() {
       setShowingDeleteModal(!showingDeleteModal); 
     }
   }
+
+  const handleToggleInfoModal = () => {
+    setShowingMoreInfo(!showingMoreInfo);
+  }
+
+  // Function to handle exporting tasks to a JSON file
+  const handleExportTasks = () => {
+    const json = exportTasksToJSON(tasks);
+    if (json) {
+        const blob = new Blob([json], {type: "application/json"});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'tasks.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    } else {
+        setErrMsg("Failed to export tasks.");
+    }
+  };
+
+  // Function to handle importing tasks from a JSON file
+  const handleImportTasks = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === "application/json") {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const importedTasks = importTasksFromJSON(e.target.result);
+            if (importedTasks) {
+                setTasks([...tasks, ...importedTasks]);  // append imported tasks to current tasks
+            } else {
+                setErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
+            }
+        };
+        reader.readAsText(file);
+    } else {
+        setErrMsg("Please select a valid JSON file.");
+    }
+  };
   
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
-      <header className="app-header pa3">
-        <h1 className="ma0 f2 fw8 tracked-custom">AutoFocus</h1>
+      <header className="app-header pa3 flex justify-center items-center">
+        <h1 className="ma0 f3 f2-ns fw8 tracked-custom dib">AutoFocus FV</h1>
+        <div className="dib pl3">
+          <button 
+            type="button" 
+            className="button-reset w2 h2 pointer f5 fw6 grow bg-moon-gray br-100 ba bw1 b--gray "
+            onClick={handleToggleInfoModal}>
+              i</button>
+        </div>
       </header>
 
       <section className="app-container relative">
@@ -191,7 +241,7 @@ function App() {
 
         {/*prioritization review modal*/}
         {(isPrioritizing && cursor !== -1 && cursor < tasks.length) && 
-          <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
+          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <p className="ph3 lh-copy balance">{genQuestion(tasks, cursor)}</p>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleQuitUI}>Quit</button>
@@ -199,16 +249,36 @@ function App() {
                     onClick={handleNoUI}>No</button>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleYesUI}>Yes</button>
-          </div>}
+          </section>}
 
           {showingDeleteModal &&
-          <div className="absolute f4 top-0 w-100 h-100 bg-white-80">
+          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <p className="ph3 lh-copy balance">Are you sure you want to delete your list?</p>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleToggleDeleteModal}>No</button>
             <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
                     onClick={handleDeleteUI}>Yes</button>
-          </div>}
+          </section>}
+
+          {showingMoreInfo &&
+          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+            <section className="relative z-1 measure-narrow ml-auto mr-auto">
+              <p className="ph3 ma0 lh-copy balance">Here you can import (load) and export (save) JSON lists.</p>
+              
+              <div className="pv3">
+                <label forhtml="file-upload" className="br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray bg-moon-gray pa2 pointer ma1">
+                <span>Import</span>
+                <input id="file-upload" className="dn input-reset"
+                    type="file" accept=".json" onChange={handleImportTasks} />
+                </label>
+                <button className="br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1"
+                  onClick={handleExportTasks}>Export</button>
+              </div>
+              <p className="ph3 ma0 lh-copy balance">AutoFocus Final Version was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+              <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
+            </section>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
+          </section>}
       </section>
     </main>
   );
