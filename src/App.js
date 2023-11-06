@@ -18,6 +18,7 @@ function App() {
   const [errMsg, setErrMsg] = useState("");
   const [showingDeleteModal, setShowingDeleteModal] = useState(false);
   const [showingMoreInfo, setShowingMoreInfo] = useState(false);
+  const [importErrMsg, setImportErrMsg] = useState("");
 
   useEffect(()=>{
     saveCursorToLocal();
@@ -119,10 +120,12 @@ function App() {
 
   const handleToggleInfoModal = () => {
     setShowingMoreInfo(!showingMoreInfo);
+    setImportErrMsg("");
   }
 
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
+    setImportErrMsg("");
     const json = exportTasksToJSON(tasks);
     if (json) {
         const blob = new Blob([json], {type: "application/json"});
@@ -139,6 +142,7 @@ function App() {
 
   // Function to handle importing tasks from a JSON file
   const handleImportTasks = (event) => {
+    setImportErrMsg("");
     const file = event.target.files[0];
     if (file && file.type === "application/json") {
         const reader = new FileReader();
@@ -148,7 +152,7 @@ function App() {
                 setTasks([...tasks, ...importedTasks]);  // append imported tasks to current tasks
                 saveTasksToLocal([...tasks, ...importedTasks]); ////
             } else {
-                setErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
+                setImportErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
             }
         };
         reader.readAsText(file);
@@ -275,6 +279,8 @@ function App() {
                 <button className="br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1"
                   onClick={handleExportTasks}>Export</button>
               </div>
+              {importErrMsg && 
+                <p className="ph3 pb3 ma0 lh-copy balance red">{importErrMsg}</p>}
               <p className="ph3 ma0 lh-copy balance">AutoFocus Final Version was designed by Mark Forster. This web app was built by Avi Drucker.</p>
               <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
