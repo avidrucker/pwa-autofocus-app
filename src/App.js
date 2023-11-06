@@ -172,6 +172,17 @@ function App() {
         setErrMsg("Please select a valid JSON file.");
     }
   };
+
+  const handleLabelKeyPress = (event) => {
+    // Check for Enter or Space key
+    if (event.key === 'Enter' || event.key === ' ') {
+      // Prevent the default action to avoid scrolling on Space press
+      event.preventDefault();
+      // Trigger click on file input
+      document.getElementById('file-upload').click();
+    }
+  };
+  
   
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
@@ -284,7 +295,11 @@ function App() {
               <p className="ph3 ma0 lh-copy balance">Here you can import (load) and export (save) JSON lists.</p>
               
               <div className="pv3">
-                <label forhtml="file-upload" className="br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray bg-moon-gray pa2 pointer ma1">
+                <label 
+                  tabIndex="0" 
+                  onKeyDown={handleLabelKeyPress}
+                  htmlFor="file-upload" 
+                  className="br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray bg-moon-gray pa2 pointer ma1">
                 <span>Import</span>
                 <input id="file-upload" className="dn input-reset"
                     type="file" accept=".json" onChange={handleImportTasks} />
