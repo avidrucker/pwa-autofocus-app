@@ -205,7 +205,7 @@ function App() {
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing} 
-                onClick={handleToggleDeleteModal}>Clear List</button></div>
+                onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
             <div className="dib">
