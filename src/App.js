@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
 import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
@@ -19,6 +19,15 @@ function App() {
   const [showingDeleteModal, setShowingDeleteModal] = useState(false);
   const [showingMoreInfo, setShowingMoreInfo] = useState(false);
   const [importErrMsg, setImportErrMsg] = useState("");
+  const inputRef = useRef(null);
+
+  // This effect runs only once after the initial render 
+  // because of the empty dependency array [].
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, []);
 
   useEffect(()=>{
     saveCursorToLocal();
@@ -90,6 +99,9 @@ function App() {
     saveTasksToLocal(updatedTasks);
     setErrMsg("");
     setShowingDeleteModal(false);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   };
 
   const handleNoUI = () => {
@@ -179,6 +191,7 @@ function App() {
           <div>
             <div className="measure-narrow ml-auto mr-auto">
               <input 
+                ref={inputRef}
                 id="todo-input"
                 disabled={isPrioritizing}
                 className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray" 
