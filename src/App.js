@@ -206,7 +206,7 @@ function App() {
             </div>
           </div>
 
-          {errMsg && <p className="lh-copy red ma0 pt3 ph3 balance">{errMsg}</p>}
+          {errMsg && <p className="lh-copy red ml-auto mr-auto measure ma0 pt3 ph3 balance">{errMsg}</p>}
 
           <section className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
@@ -293,7 +293,7 @@ function App() {
                   onClick={handleExportTasks}>Export</button>
               </div>
               {importErrMsg && 
-                <p className="ph3 pb3 ma0 lh-copy balance red">{importErrMsg}</p>}
+                <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance red">{importErrMsg}</p>}
               <p className="ph3 ma0 lh-copy balance">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
               <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
