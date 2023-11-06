@@ -146,6 +146,7 @@ function App() {
             const importedTasks = importTasksFromJSON(e.target.result);
             if (importedTasks) {
                 setTasks([...tasks, ...importedTasks]);  // append imported tasks to current tasks
+                saveTasksToLocal([...tasks, ...importedTasks]); ////
             } else {
                 setErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
             }
