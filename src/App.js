@@ -164,7 +164,7 @@ function App() {
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
       <header className="app-header pa3 flex justify-center items-center">
-        <h1 className="ma0 f3 f2-ns fw8 tracked-custom dib">AutoFocus FV</h1>
+        <h1 className="ma0 f3 f2-ns fw8 tracked-custom dib">AutoFocus</h1>
         <div className="dib pl3">
           <button 
             type="button" 
@@ -281,7 +281,7 @@ function App() {
               </div>
               {importErrMsg && 
                 <p className="ph3 pb3 ma0 lh-copy balance red">{importErrMsg}</p>}
-              <p className="ph3 ma0 lh-copy balance">AutoFocus Final Version was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+              <p className="ph3 ma0 lh-copy balance">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
               <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
