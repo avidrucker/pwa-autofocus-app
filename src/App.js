@@ -6,6 +6,14 @@ import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import TodoItem from './TodoItem';
 import './App.css';
 
+const infoCircle = <svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path>
+</svg>;
+
+const saveDisk = <svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+<path d="M433.941 129.941l-83.882-83.882A48 48 0 0 0 316.118 32H48C21.49 32 0 53.49 0 80v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V163.882a48 48 0 0 0-14.059-33.941zM224 416c-35.346 0-64-28.654-64-64 0-35.346 28.654-64 64-64s64 28.654 64 64c0 35.346-28.654 64-64 64zm96-304.52V212c0 6.627-5.373 12-12 12H76c-6.627 0-12-5.373-12-12V108c0-6.627 5.373-12 12-12h228.52c3.183 0 6.235 1.264 8.485 3.515l3.48 3.48A11.996 11.996 0 0 1 320 111.48z"></path>
+</svg>;
+
 const activeListOffset = 0;
 const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
@@ -56,6 +64,7 @@ function App() {
   const [errMsg, setErrMsg] = useState("");
   const [showingDeleteModal, setShowingDeleteModal] = useState(false);
   const [showingMoreInfo, setShowingMoreInfo] = useState(false);
+  const [showingSaveModal, setShowingSaveModal] = useState(false);
   const [importErrMsg, setImportErrMsg] = useState("");
   const inputRef = useRef(null);
   const [showingConflictModal, setShowingConflictModal] = useState(false);
@@ -217,7 +226,13 @@ function App() {
 
   const handleToggleInfoModal = () => {
     setShowingMoreInfo(!showingMoreInfo);
+    setErrMsg("");
+  }
+
+  const handleToggleSaveModal = () => {
+    setShowingSaveModal(!showingSaveModal);
     setImportErrMsg("");
+    setErrMsg("");
   }
 
   // Function to handle exporting tasks to a JSON file
@@ -327,14 +342,24 @@ function App() {
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
       <header className="app-header pa3 flex justify-center items-center">
-        <h1 className="ma0 f3 f2-ns fw8 tracked-custom dib">AutoFocus</h1>
-        <div className="dib pl3">
+        <h1 className="ma0 f2 fw8 tracked-custom dib">AutoFocus</h1>
+        
+        <div className="pl3 inline-flex items-center">
           <button 
             type="button" 
-            disabled={isPrioritizing || showingDeleteModal || showingConflictModal}
-            className="button-reset w2 h2 pointer f5 fw6 grow bg-moon-gray br-100 ba bw1 b--gray "
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingMoreInfo}
+            className="button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn moon-gray"
+            onClick={handleToggleSaveModal}>
+              {saveDisk}</button>
+        </div>
+        
+        <div className="pl2 inline-flex items-center">
+          <button 
+            type="button" 
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal}
+            className="button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn moon-gray"
             onClick={handleToggleInfoModal}>
-              i</button>
+              {infoCircle}</button>
         </div>
       </header>
 
@@ -345,7 +370,7 @@ function App() {
               <input 
                 ref={inputRef}
                 id="todo-input"
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal}
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
                 className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray" 
                 type="text" 
                 placeholder="Add a task..." 
@@ -364,24 +389,24 @@ function App() {
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
             <div className="dib">
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
             </div>
           </section>
@@ -421,12 +446,10 @@ function App() {
                     onClick={handleDeleteUI}>Yes</button>
           </section>}
 
-          {/*app info modal*/}
-          {showingMoreInfo &&
+          {/*save modal*/}
+          {showingSaveModal &&
           <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
-
-              <p className="ph3 pb3 ma0 lh-copy">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
 
               <p className="ph3 ma0 lh-copy">You can import and export JSON lists into and out of AutoFocus.</p>
               
@@ -462,7 +485,19 @@ function App() {
                 <button className="br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer" onClick={handleTextImport}>Submit</button>
               </div>
               
-              <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
+              <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'disk' icon above to close this window.</p>
+            </section>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleSaveModal} type="button">Close Save Modal</button>
+          </section>}
+
+          {/*app info modal*/}
+          {showingMoreInfo &&
+          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+            <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
+
+              <p className="ph3 pb3 ma0 lh-copy">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+
+              <p className="ph3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
           </section>}
