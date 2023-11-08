@@ -54,3 +54,14 @@ export const addTask = (tasks, text) =>
     { id: nextId(tasks), text, status: hasReady(tasks) ? "new" : "ready" }];
 
 export const emptyList = () => [];
+
+export const addAll = (initialTasks, newTasks) => {
+  const maxId = initialTasks.reduce((max, task) => Math.max(max, task.id), -1);
+  const updatedNewTasks = newTasks.map((task, index) => ({
+    id: maxId + index + 1, // Assign new IDs starting from maxId + 1
+    text: task.text,
+    status: task.status,
+  }));
+
+  return [...initialTasks, ...updatedNewTasks];
+};

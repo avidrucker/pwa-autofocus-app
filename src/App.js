@@ -1,5 +1,5 @@
 import {useState, useEffect, useRef} from 'react';
-import { addTask, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
+import { addTask, addAll, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
 import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
 import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
@@ -245,8 +245,10 @@ function App() {
         reader.onload = (e) => {
             const importedTasks = importTasksFromJSON(e.target.result);
             if (importedTasks) {
-                setTasks([...tasks, ...importedTasks]);  // append imported tasks to current tasks
-                saveTasksToLocal([...tasks, ...importedTasks]); ////
+                // append imported tasks to current tasks, addAll updates
+                // ids for 2nd list to prevent id collisions
+                const updatedTasks = addAll(tasks, importedTasks);
+                handleListChange(updatedTasks);
             } else {
                 setImportErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
             }
