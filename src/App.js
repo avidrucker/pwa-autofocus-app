@@ -6,6 +6,44 @@ import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import TodoItem from './TodoItem';
 import './App.css';
 
+const activeListOffset = 0;
+const queryStringListOffset = 100;
+const initialTasksListOffset = 200;
+
+function objectsAreEqual(obj1, obj2) {
+  const keys1 = Object.keys(obj1);
+  const keys2 = Object.keys(obj2);
+
+  if (keys1.length !== keys2.length) {
+    return false; // If the objects have different numbers of properties, they are not equal
+  }
+
+  for (const key of keys1) {
+    if (obj1[key] !== obj2[key]) {
+      return false; // If any property values are different, the objects are not equal
+    }
+  }
+
+  return true; // If no differences were found, the objects are equal
+}
+
+function arraysAreEqual(arr1, arr2) {
+  if (arr1.length !== arr2.length) {
+    return false; // If the lengths are different, the arrays are not equal
+  }
+
+  // Sort the arrays by a unique property to ensure the order doesn't affect the comparison
+  const sortedArr1 = arr1.slice().sort((a, b) => a.id - b.id);
+  const sortedArr2 = arr2.slice().sort((a, b) => a.id - b.id);
+
+  for (let i = 0; i < sortedArr1.length; i++) {
+    if (!objectsAreEqual(sortedArr1[i], sortedArr2[i])) {
+      return false; // If any objects are not equal, the arrays are not equal
+    }
+  }
+
+  return true; // If no differences were found, the arrays are equal
+}
 
 function App() {
   const initialTasks = getFromLocalStorage('tasks', []);
@@ -20,6 +58,7 @@ function App() {
   const [showingMoreInfo, setShowingMoreInfo] = useState(false);
   const [importErrMsg, setImportErrMsg] = useState("");
   const inputRef = useRef(null);
+  const [showingConflictModal, setShowingConflictModal] = useState(false);
 
   // This effect runs only once after the initial render 
   // because of the empty dependency array [].
@@ -28,6 +67,44 @@ function App() {
       inputRef.current.focus();
     }
   }, []);
+
+  useEffect(() => {
+    // Attempt to load the list state from the URL
+    const listStateFromURL = deserializeQueryStringToListState(window.location.search);
+
+    if(listStateFromURL) {
+      if (listStateFromURL.length !== 0 && initialTasks.length === 0) {
+        // If URL state is present and local storage is empty, use the URL state
+        // console.log("using URL state")
+        handleListChange(listStateFromURL);
+      } else if (listStateFromURL.length === 0 && initialTasks.length !== 0) {
+        // If URL state is not present, default to using local storage state if it exists
+        // console.log("URL state not found, defaulting to local storage")
+        handleListChange(initialTasks);
+      }
+       else if (listStateFromURL.length !== 0 && initialTasks.length !== 0) {
+        if(arraysAreEqual(listStateFromURL, initialTasks)) {
+          // we don't have to do anything if the query params and local storage list match
+          // console.log("list from query params and list from local storage are the same")
+        } else {
+          // however, if we have two different lists from query params and local storage,
+          // we will prompt the user to choose which one to use
+          // console.log("conflict found, activating conflict resolution modal")
+          setShowingConflictModal(true);
+        }
+      } else {
+        // Neither state exists, so we will have an empty default list
+        console.log("No state found in address bar or local storage")
+        handleListChange(initialTasks);
+      }
+    } else {
+      // invalid query string found or missing query string, so, let's rebuild it 
+      // and save it back to the query params
+      console.log("rebuilding query params from local storage")
+      handleListChange(initialTasks);
+    }
+
+  }, []); // The empty dependency array ensures this effect runs once on mount
 
   useEffect(()=>{
     saveCursorToLocal();
@@ -70,12 +147,22 @@ function App() {
     }
   };
 
+  const handleListChange = (newListState) => {
+    // Serialize the new state to a query string
+    const queryString = serializeListStateToQueryString(newListState);
+  
+    // Update the URL without reloading the page
+    window.history.pushState({}, '', queryString);
+  
+    setTasks(newListState);
+    saveTasksToLocal(newListState);
+  };
+
   const handleAddTaskUI = (e) => {
     e.preventDefault();
     if (inputValue.trim()) {
       const updatedTasks = addTask(tasks, inputValue);
-      setTasks(updatedTasks);
-      saveTasksToLocal(updatedTasks);
+      handleListChange(updatedTasks);
       setInputValue('');
     } else {
       setErrMsg("New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.");
@@ -87,16 +174,14 @@ function App() {
       setErrMsg("There are no actionable tasks in your list.");
     } else {
       const updatedTasks = completeBenchmarkTask(tasks);
-      setTasks(updatedTasks);
-      saveTasksToLocal(updatedTasks);
+      handleListChange(updatedTasks);
       setErrMsg("");
     }
   }
 
   const handleDeleteUI = () => {
     const updatedTasks = emptyList();
-    setTasks([...updatedTasks]);
-    saveTasksToLocal(updatedTasks);
+    handleListChange(updatedTasks);
     setErrMsg("");
     setShowingDeleteModal(false);
     if (inputRef.current) {
@@ -112,8 +197,7 @@ function App() {
   const handleYesUI = () => {
     const result = handleReviewDecision(tasks, cursor, "Yes");
     setCursor(result.cursor);
-    setTasks([...result.tasks]);
-    saveTasksToLocal(result.tasks);
+    handleListChange(result.tasks);
   }
 
   const handleQuitUI = () => {
@@ -182,7 +266,45 @@ function App() {
       document.getElementById('file-upload').click();
     }
   };
+
+  const serializeListStateToQueryString = (listState) => {
+    // Serialize listState to a query-friendly string, such as base64
+    const serializedState = btoa(encodeURIComponent(JSON.stringify(listState)));
+    return `?list=${serializedState}`;
+  };
+
+  const deserializeQueryStringToListState = (queryString) => {
+    // Extract the 'list' parameter from the query string
+    const params = new URLSearchParams(queryString);
+    const serializedState = params.get('list');
+    if (!serializedState) return null;
   
+    // Deserialize the state from a query-friendly string
+    try {
+      const listState = JSON.parse(decodeURIComponent(atob(serializedState)));
+      return listState;
+    } catch (error) {
+      console.error('Failed to deserialize query string:', error);
+      return null;
+    }
+  };
+
+  const handleListConflictChoice = (newListState) => {
+    handleListChange(newListState);
+    setShowingConflictModal(false);
+  }
+
+  const renderList = (inputList, idOffset) => <div className="ph3 pb3">
+    <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
+      {inputList.map(task => (
+        <TodoItem 
+          key={task.id + idOffset} 
+          task={task} 
+          isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
+        />
+      ))}
+    </ul>
+  </div>
   
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
@@ -246,17 +368,7 @@ function App() {
           </section>
         </form>
         
-        {tasks.length > 0 && <div className="ph3 pb3">
-          <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
-            {tasks.map(task => (
-              <TodoItem 
-                key={task.id} 
-                task={task} 
-                isBenchmark={benchmarkItem(tasks) !== null && benchmarkItem(tasks).id === task.id}
-              />
-            ))}
-          </ul>
-        </div>}
+        {tasks.length > 0 && renderList(tasks, activeListOffset)}
 
         <div className="ph3 pb3">
           <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
@@ -307,13 +419,32 @@ function App() {
                 <button className="br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1"
                   onClick={handleExportTasks}>Export</button>
               </div>
+
               {importErrMsg && 
                 <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance red">{importErrMsg}</p>}
+
               <p className="ph3 ma0 lh-copy balance">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
               <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
           </section>}
+
+          {showingConflictModal && <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+            <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance">There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue working with?</p>
+            <p>1. List from the <em>link</em> address:</p>
+            {renderList(deserializeQueryStringToListState(window.location.search), queryStringListOffset)}
+            <p>2. List from <em>local</em> storage:</p>
+            {renderList(initialTasks, initialTasksListOffset)}
+            <button 
+              className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+              onClick={() => handleListConflictChoice(deserializeQueryStringToListState(window.location.search))}>
+                1. Keep <em>link</em> list</button>
+            <button
+              className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+              onClick={() => handleListConflictChoice(initialTasks)}>
+                2. Keep <em>local</em> list</button>
+            </section>}
+
       </section>
     </main>
   );
