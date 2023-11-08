@@ -315,6 +315,7 @@ function App() {
         <div className="dib pl3">
           <button 
             type="button" 
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal}
             className="button-reset w2 h2 pointer f5 fw6 grow bg-moon-gray br-100 ba bw1 b--gray "
             onClick={handleToggleInfoModal}>
               i</button>
@@ -328,7 +329,7 @@ function App() {
               <input 
                 ref={inputRef}
                 id="todo-input"
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo}
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal}
                 className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray" 
                 type="text" 
                 placeholder="Add a task..." 
@@ -347,24 +348,24 @@ function App() {
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
             <div className="dib">
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
             </div>
           </section>
