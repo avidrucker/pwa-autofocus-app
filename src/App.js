@@ -59,6 +59,7 @@ function App() {
   const [importErrMsg, setImportErrMsg] = useState("");
   const inputRef = useRef(null);
   const [showingConflictModal, setShowingConflictModal] = useState(false);
+  const [textAreaValue, setTextAreaValue] = useState('');
 
   // This effect runs only once after the initial render 
   // because of the empty dependency array [].
@@ -94,7 +95,7 @@ function App() {
         }
       } else {
         // Neither state exists, so we will have an empty default list
-        console.log("No state found in address bar or local storage")
+        // console.log("No state found in address bar or local storage")
         handleListChange(initialTasks);
       }
     } else {
@@ -235,6 +236,21 @@ function App() {
         setErrMsg("Failed to export tasks.");
     }
   };
+
+  // Function to handle importing tasks from raw text
+  const handleTextImport = () => {
+    if (textAreaValue.trim()) {
+      const lines = textAreaValue.split("\n");
+      let updatedTasks = tasks;
+      for(let i = 0; i < lines.length; i++) {
+        updatedTasks = addTask(updatedTasks, lines[i]);
+      }
+      handleListChange(updatedTasks);
+      setTextAreaValue('');
+    } else {
+      setImportErrMsg("New items cannot be empty or whitespace only.");
+    }
+  }
 
   // Function to handle importing tasks from a JSON file
   const handleImportTasks = (event) => {
@@ -408,10 +424,13 @@ function App() {
           {/*app info modal*/}
           {showingMoreInfo &&
           <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
-            <section className="relative z-1 measure-narrow ml-auto mr-auto">
-              <p className="ph3 ma0 lh-copy balance">Here you can import (load) and export (save) JSON lists.</p>
+            <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
+
+              <p className="ph3 pb3 ma0 lh-copy">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+
+              <p className="ph3 ma0 lh-copy">You can import and export JSON lists into and out of AutoFocus.</p>
               
-              <div className="pv3">
+              <div className="pb3 tc">
                 <label 
                   tabIndex="0" 
                   onKeyDown={handleLabelKeyPress}
@@ -426,9 +445,23 @@ function App() {
               </div>
 
               {importErrMsg && 
-                <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance red">{importErrMsg}</p>}
+                <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto red">{importErrMsg}</p>}
+              
+              <p className="ph3 pb1 ma0 lh-copy">You can also import a text list directly by pasting in text below, and then clicking the 'Submit' button.</p>
 
-              <p className="ph3 ma0 lh-copy balance">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+              <div className="ph3">
+                <textarea 
+                  className="db input-reset pa2 w-100 resize-none lh-copy br3 ba bw1 b--gray" 
+                  rows="2" 
+                  value={textAreaValue}
+                  onChange={(e) => {
+                    setTextAreaValue(e.target.value);
+                    setImportErrMsg("");
+                  }}
+                  placeholder="Paste your list here, with each item on a new line" />
+                <button className="br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer" onClick={handleTextImport}>Submit</button>
+              </div>
+              
               <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
@@ -436,10 +469,10 @@ function App() {
 
           {/*local storage and query params conflict resolution modal*/}
           {showingConflictModal && <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
-            <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance">There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue working with?</p>
-            <p>1. List from the <em>link</em> address:</p>
+            <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto tl">There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue working with?</p>
+            <p className="fw6">1. List from the <em>link</em> address:</p>
             {renderList(deserializeQueryStringToListState(window.location.search), queryStringListOffset)}
-            <p>2. List from <em>local</em> storage:</p>
+            <p className="fw6">2. List from <em>local</em> storage:</p>
             {renderList(initialTasks, initialTasksListOffset)}
             <button 
               className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
