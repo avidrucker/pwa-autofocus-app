@@ -134,6 +134,13 @@ function App() {
     // eslint-disable-next-line
   }, [isPrioritizing])
 
+  // focusing on the input after deleting the list
+  useEffect(() => {
+    if (!showingDeleteModal && tasks.length === 0) {
+      inputRef.current.focus();
+    }
+  }, [showingDeleteModal, tasks.length]);
+
   const saveTasksToLocal = (tasks) => {
     saveToLocalStorage('tasks', tasks);
   };
@@ -194,9 +201,6 @@ function App() {
     handleListChange(updatedTasks);
     setErrMsg("");
     setShowingDeleteModal(false);
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
   };
 
   const handleNoUI = () => {
