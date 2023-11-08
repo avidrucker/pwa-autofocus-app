@@ -13,3 +13,7 @@
 .balance {
     text-wrap: balance;
 }
+
+.resize-none {
+    resize: none;
+}
