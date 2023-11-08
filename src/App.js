@@ -395,6 +395,7 @@ function App() {
                     onClick={handleYesUI}>Yes</button>
           </section>}
 
+          {/*'are you sure you want to delete your list?' modal*/}
           {showingDeleteModal &&
           <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <p className="ph3 lh-copy balance">Are you sure you want to delete your list?</p>
@@ -404,6 +405,7 @@ function App() {
                     onClick={handleDeleteUI}>Yes</button>
           </section>}
 
+          {/*app info modal*/}
           {showingMoreInfo &&
           <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <section className="relative z-1 measure-narrow ml-auto mr-auto">
@@ -432,6 +434,7 @@ function App() {
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
           </section>}
 
+          {/*local storage and query params conflict resolution modal*/}
           {showingConflictModal && <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
             <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto balance">There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue working with?</p>
             <p>1. List from the <em>link</em> address:</p>
