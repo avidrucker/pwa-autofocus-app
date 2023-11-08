@@ -104,7 +104,7 @@ function App() {
       console.log("rebuilding query params from local storage")
       handleListChange(initialTasks);
     }
-
+    // eslint-disable-next-line
   }, []); // The empty dependency array ensures this effect runs once on mount
 
   useEffect(()=>{
