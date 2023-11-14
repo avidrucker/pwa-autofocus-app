@@ -18,6 +18,11 @@ const activeListOffset = 0;
 const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
+const infoString1 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.";
+const infoString2 = "The AutoFocus algorithm was designed as apen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
+const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
+const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
+
 function objectsAreEqual(obj1, obj2) {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
@@ -375,7 +380,7 @@ function App() {
                 ref={inputRef}
                 id="todo-input"
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
-                className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray" 
+                className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray hover-bg-light-gray active-bg-white" 
                 type="text" 
                 placeholder="Add a task..." 
                 value={inputValue}
@@ -452,10 +457,10 @@ function App() {
 
           {/*save modal*/}
           {showingSaveModal &&
-          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+          <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
-              <p className="ph3 ma0 lh-copy">You can import and export JSON lists into and out of AutoFocus.</p>
+              <p className="ph3 ma0 lh-copy">{saveInfo1}</p>
               
               <div className="pb3 tc">
                 <label 
@@ -474,7 +479,7 @@ function App() {
               {importErrMsg && 
                 <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto red">{importErrMsg}</p>}
               
-              <p className="ph3 pb1 ma0 lh-copy">You can also import a text list directly by pasting in text below, and then clicking the 'Submit' button.</p>
+              <p className="ph3 pb1 ma0 lh-copy">{saveInfo2}</p>
 
               <div className="ph3">
                 <textarea 
@@ -489,19 +494,21 @@ function App() {
                 <button className="br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer" onClick={handleTextImport}>Submit</button>
               </div>
               
-              <p className="ph3 pt3 ma0 lh-copy balance">Click on the 'disk' icon above to close this window.</p>
+              <p className="pa3 ma0 lh-copy balance">Click on the 'disk' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleSaveModal} type="button">Close Save Modal</button>
           </section>}
 
           {/*app info modal*/}
           {showingMoreInfo &&
-          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+          <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
-              <p className="ph3 pb3 ma0 lh-copy">AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.</p>
+              <p className="ph3 pb3 ma0 lh-copy">{infoString1}</p>
 
-              <p className="ph3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
+              <p className="ph3 pb3 ma0 lh-copy">{infoString2}</p>
+
+              <p className="ph3 pb3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
           </section>}
