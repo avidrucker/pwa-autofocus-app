@@ -19,7 +19,7 @@ const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
 const infoString1 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.";
-const infoString2 = "The AutoFocus algorithm was designed as apen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
+const infoString2 = "The AutoFocus algorithm was designed as a pen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
 const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
 
@@ -113,6 +113,7 @@ function App() {
         handleListChange(initialTasks);
       }
     } else {
+      // TODO: detect invalid query string and render error message accordingly
       // invalid query string found or missing query string, so, let's rebuild it 
       // and save it back to the query params
       console.log("rebuilding query params from local storage")
