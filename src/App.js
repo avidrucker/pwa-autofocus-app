@@ -5,8 +5,9 @@ import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdap
 import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import TodoItem from './TodoItem';
 import {saveDisk, infoCircle} from './core/icons'
-
 import './App.css';
+
+// TODO: refactor all buttons to change color on hover, focus, active rather than grow
 
 const activeListOffset = 0;
 const queryStringListOffset = 100;
