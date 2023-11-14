@@ -116,7 +116,7 @@ function App() {
       // TODO: detect invalid query string and render error message accordingly
       // invalid query string found or missing query string, so, let's rebuild it 
       // and save it back to the query params
-      console.log("rebuilding query params from local storage")
+      console.info("rebuilding query params from local storage")
       handleListChange(initialTasks);
     }
     // eslint-disable-next-line
