@@ -29,6 +29,7 @@ const cannotTakeActionErrMsg1 = "There are no actionable tasks in your list.";
 const emptyTextAreaErrMsg1 = "New items cannot be empty or whitespace only.";
 const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has the correct format.";
 const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
+const mismatchDetectedMsg1 = "There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue using?";
 
 // TODO: extract out following logic into separate module as per hexagonal architecture
 function objectsAreEqual(obj1, obj2) {
@@ -94,20 +95,20 @@ function App() {
 
   useEffect(() => {
     // Attempt to load the list state from the URL
-    const listStateFromURL = deserializeQueryStringToListState(window.location.search);
+    const listStateWrapperFromURL = deserializeQueryStringToListStateWrapper(window.location.search);
 
-    if(listStateFromURL) {
-      if (listStateFromURL.length !== 0 && initialTasks.length === 0) {
+    if(listStateWrapperFromURL.result) {
+      if (listStateWrapperFromURL.result.length !== 0 && initialTasks.length === 0) {
         // If URL state is present and local storage is empty, use the URL state
         // console.log("using URL state")
-        handleListChange(listStateFromURL);
-      } else if (listStateFromURL.length === 0 && initialTasks.length !== 0) {
+        handleListChange(listStateWrapperFromURL.result);
+      } else if (listStateWrapperFromURL.result.length === 0 && initialTasks.length !== 0) {
         // If URL state is not present, default to using local storage state if it exists
         // console.log("URL state not found, defaulting to local storage")
         handleListChange(initialTasks);
       }
-       else if (listStateFromURL.length !== 0 && initialTasks.length !== 0) {
-        if(arraysAreEqual(listStateFromURL, initialTasks)) {
+       else if (listStateWrapperFromURL.result.length !== 0 && initialTasks.length !== 0) {
+        if(arraysAreEqual(listStateWrapperFromURL.result, initialTasks)) {
           // we don't have to do anything if the query params and local storage list match
           // console.log("list from query params and list from local storage are the same")
         } else {
@@ -123,6 +124,9 @@ function App() {
       }
     } else {
       // TODO: detect invalid query string and render error message accordingly
+      if(listStateWrapperFromURL.error) {
+        setErrMsg("Invalid list query parameters detected. Reverting to local storage list data.");
+      }
       // invalid query string found or missing query string, so, let's rebuild it 
       // and save it back to the query params
       console.info("rebuilding query params from local storage")
@@ -328,23 +332,22 @@ function App() {
     return `?list=${serializedState}`;
   };
 
-  const deserializeQueryStringToListState = (queryString) => {
+  const deserializeQueryStringToListStateWrapper = (queryString) => {
     // Extract the 'list' parameter from the query string
     const params = new URLSearchParams(queryString);
     const serializedState = params.get('list');
     if (!serializedState) {
       console.info("No list data found in query parameters.");
-      return null;
+      return {result: []}; // TODO: test this as null and as {result: []}
     }
     // Deserialize the state from a query-friendly string
     try {
       // TODO: refactor out atob w/ Buffer.from(str, 'base64') and buf.toString('base64')
       const listState = JSON.parse(decodeURIComponent(atob(serializedState)));
-      return listState;
+      return {result: listState};
     } catch (error) {
-      // TODO: refactor deserialize function so that malformed query strings, upon detection, trigger the setting of an error message in the app, instead of silently failing
       console.error('Failed to deserialize query string:', error);
-      return null;
+      return {error: 'Malformed query string'};
     }
   };
 
@@ -534,20 +537,22 @@ function App() {
           </section>}
 
           {/*local storage and query params conflict resolution modal*/}
-          {showingConflictModal && <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
-            <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto tl">There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue working with?</p>
-            <p className="fw6">1. List from the <em>link</em> address:</p>
-            {renderList(deserializeQueryStringToListState(window.location.search), queryStringListOffset)}
-            <p className="fw6">2. List from <em>local</em> storage:</p>
-            {renderList(initialTasks, initialTasksListOffset)}
-            <button 
-              className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
-              onClick={() => handleListConflictChoice(deserializeQueryStringToListState(window.location.search))}>
-                1. Keep <em>link</em> list</button>
-            <button
-              className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
-              onClick={() => handleListConflictChoice(initialTasks)}>
-                2. Keep <em>local</em> list</button>
+          {showingConflictModal && <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
+            <section className="ph3 measure-narrow ml-auto mr-auto tl">
+              <p className="ma0 lh-copy">{mismatchDetectedMsg1}</p>
+              <p className="fw6 ma0 pt3">1. List from the <em>link</em> address:</p>
+              {renderList(deserializeQueryStringToListStateWrapper(window.location.search).result, queryStringListOffset)}
+              <p className="fw6 ma0">2. List from <em>local</em> storage:</p>
+              {renderList(initialTasks, initialTasksListOffset)}
+                </section>
+                <button 
+                className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+                onClick={() => handleListConflictChoice(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
+                  1. Keep <em>link</em> list</button>
+              <button
+                className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+                onClick={() => handleListConflictChoice(initialTasks)}>
+                  2. Keep <em>local</em> list</button>
             </section>}
 
       </section>
