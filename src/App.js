@@ -6,6 +6,7 @@ import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import TodoItem from './TodoItem';
 import './App.css';
 
+// TODO: extract out following svg icons into a separate module as per hexagonal architecture
 const infoCircle = <svg fill="currentColor" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
 <path d="M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z"></path>
 </svg>;
@@ -18,11 +19,18 @@ const activeListOffset = 0;
 const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
+const appName = "AutoFocus";
 const infoString1 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.";
 const infoString2 = "The AutoFocus algorithm was designed as a pen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
 const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
+const emptyInputErrMsg1 = "New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.";
+const cannotTakeActionErrMsg1 = "There are no actionable tasks in your list.";
+const emptyTextAreaErrMsg1 = "New items cannot be empty or whitespace only.";
+const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has the correct format.";
+const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
 
+// TODO: extract out following logic into separate module as per hexagonal architecture
 function objectsAreEqual(obj1, obj2) {
   const keys1 = Object.keys(obj1);
   const keys2 = Object.keys(obj2);
@@ -40,6 +48,7 @@ function objectsAreEqual(obj1, obj2) {
   return true; // If no differences were found, the objects are equal
 }
 
+// TODO: extract out following logic into separate module as per hexagonal architecture
 function arraysAreEqual(arr1, arr2) {
   if (arr1.length !== arr2.length) {
     return false; // If the lengths are different, the arrays are not equal
@@ -188,13 +197,13 @@ function App() {
       handleListChange(updatedTasks);
       setInputValue('');
     } else {
-      setErrMsg("New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.");
+      setErrMsg(emptyInputErrMsg1);
     }
   };
 
   const handleTakeActionUI = () => {
     if(!isActionableList(tasks)) {
-      setErrMsg("There are no actionable tasks in your list.");
+      setErrMsg(cannotTakeActionErrMsg1);
     } else {
       const updatedTasks = completeBenchmarkTask(tasks);
       handleListChange(updatedTasks);
@@ -248,6 +257,7 @@ function App() {
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
     setImportErrMsg("");
+    // TODO: extract out following logic into separate module as per hexagonal architecture
     const json = exportTasksToJSON(tasks);
     if (json) {
         const blob = new Blob([json], {type: "application/json"});
@@ -273,7 +283,7 @@ function App() {
       handleListChange(updatedTasks);
       setTextAreaValue('');
     } else {
-      setImportErrMsg("New items cannot be empty or whitespace only.");
+      setImportErrMsg(emptyTextAreaErrMsg1);
     }
   }
 
@@ -286,22 +296,23 @@ function App() {
         reader.onload = (e) => {
             const importedTasks = importTasksFromJSON(e.target.result);
             if (importedTasks) {
-                // append imported tasks to current tasks, addAll updates
-                // ids for 2nd list to prevent id collisions
+                // append imported tasks to current tasks,
+                // addAll updates ids for 2nd list to 
+                // prevent id collisions
                 const updatedTasks = addAll(tasks, importedTasks);
                 handleListChange(updatedTasks);
             } else {
-                setImportErrMsg("Failed to import tasks. Ensure the JSON file has the correct format.");
+                setImportErrMsg(badJSONimportErrMsg1);
             }
         };
         reader.readAsText(file);
     } else {
-        setErrMsg("Please select a valid JSON file.");
+        setErrMsg(nonJSONimportAttemptedErrMsg1);
     }
   };
 
+  // TODO: rename function to better describe intent
   const handleLabelKeyPress = (event) => {
-    // Check for Enter or Space key
     if (event.key === 'Enter' || event.key === ' ') {
       // Prevent the default action to avoid scrolling on Space press
       event.preventDefault();
@@ -311,6 +322,7 @@ function App() {
   };
 
   const serializeListStateToQueryString = (listState) => {
+    // TODO: refactor out btoa w/ Buffer.from(str, 'base64') and buf.toString('base64')
     // Serialize listState to a query-friendly string, such as base64
     const serializedState = btoa(encodeURIComponent(JSON.stringify(listState)));
     return `?list=${serializedState}`;
@@ -320,13 +332,17 @@ function App() {
     // Extract the 'list' parameter from the query string
     const params = new URLSearchParams(queryString);
     const serializedState = params.get('list');
-    if (!serializedState) return null;
-  
+    if (!serializedState) {
+      console.info("No list data found in query parameters.");
+      return null;
+    }
     // Deserialize the state from a query-friendly string
     try {
+      // TODO: refactor out atob w/ Buffer.from(str, 'base64') and buf.toString('base64')
       const listState = JSON.parse(decodeURIComponent(atob(serializedState)));
       return listState;
     } catch (error) {
+      // TODO: refactor deserialize function so that malformed query strings, upon detection, trigger the setting of an error message in the app, instead of silently failing
       console.error('Failed to deserialize query string:', error);
       return null;
     }
@@ -337,6 +353,9 @@ function App() {
     setShowingConflictModal(false);
   }
 
+  // idOffset is here for the purposes of rendering multiple
+  // lists at once, such as when evaluating conflicting
+  // lists in localStorage and query params
   const renderList = (inputList, idOffset) => <div className="ph3 pb3">
     <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
       {inputList.map(task => (
@@ -352,7 +371,7 @@ function App() {
   return (
     <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
       <header className="app-header pa3 flex justify-center items-center">
-        <h1 className="ma0 f2 fw8 tracked-custom dib">AutoFocus</h1>
+        <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
         
         <div className="pl3 inline-flex items-center">
           <button 
