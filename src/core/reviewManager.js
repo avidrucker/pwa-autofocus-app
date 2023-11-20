@@ -1,18 +1,22 @@
 import { hasReady, hasNew } from './taskUtils';
 
+const noValidCursorErrMsg = "Review question cannot be generated because there is no valid cursor.";
+const noBenchmarkItemErrMsg = "Review question cannot be generated because there is no benchmark item to compare against.";
+const listNotPrioritizableErrMsg = "The list isn't prioritizable right now.";
+
 const questionString = (benchmarkItemText, cursorItemText) =>
     `In this moment, are you more ready to '${cursorItemText}' than '${benchmarkItemText}'?`;
   
 export const genQuestion = (tasks, cursor) => {
     if(cursor === -1 || cursor >= tasks.length) {
-        return "Review question cannot be generated because there is no valid cursor.";
+        return noValidCursorErrMsg;
     }
     
     const cursorItem = tasks[cursor];
     const benchmarkItem = tasks.filter(x => x.status === "ready").at(-1);
 
     if (!benchmarkItem) {
-        return "Review question cannot be generated because there is no benchmark item to compare against.";
+        return noBenchmarkItemErrMsg;
     }
 
     return questionString(benchmarkItem.text, cursorItem.text);
@@ -61,7 +65,10 @@ export const markReadyAtIndex = (tasks, cursor) => {
 export const startReview = (tasks) => {
     // check is task list prioritizable
     if (!isPrioritizableList(tasks)) {
-        return { error: "The list isn't prioritizable right now." };
+        // TODO: add clear reason why list isn't prioritizable
+        // for example, because there are no new items, or, because 
+        // the last non-done item is marked as ready already
+        return { error: listNotPrioritizableErrMsg };
     }
 
     // get initial cursor position
