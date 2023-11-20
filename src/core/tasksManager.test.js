@@ -1,5 +1,4 @@
-// tasksManager.test.js
-import { addTask, nextId, completeBenchmarkTask, isPrioritizableList } from './tasksManager';
+import { addTask, nextId, completeBenchmarkTask } from './tasksManager';
 
 describe('nextId function', () => {
   test('should return 0 for an empty tasks list', () => {
