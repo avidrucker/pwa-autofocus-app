@@ -1,4 +1,4 @@
-import { startReview, handleReviewDecision, nextCursor, markReadyAtIndex, isPrioritizableList, getInitialCursor } from './reviewManager';
+import { startReview, handleReviewDecision, isPrioritizableList } from './reviewManager';
 
 describe('reviewManager', () => {
 
