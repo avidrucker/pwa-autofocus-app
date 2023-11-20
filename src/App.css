@@ -38,3 +38,24 @@
   .focus-bg-white:focus {
     background-color: white;
   }
+
+  .hover-bg-dark-gray {
+    background-color: rgba(51, 51, 51, 1); 
+    transition: all .2s ease-in;
+  }
+  
+  .hover-bg-dark-gray:hover, .hover-bg-dark-gray:focus {
+    background-color: rgba(51, 51, 51, 0);
+    transition: all .2s ease-in;
+  }
+  .hover-bg-dark-gray:active {
+    background-color: rgba(51, 51, 51, 0);
+    transition: all .2s ease-out;
+  }
+  
+  .active-bg-black:active {
+    background-color: black;
+  }
+  .focus-bg-black:focus {
+    background-color: black;
+  }
