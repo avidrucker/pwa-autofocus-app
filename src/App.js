@@ -3,19 +3,22 @@ import { addTask, addAll, completeBenchmarkTask, benchmarkItem, emptyList, isAct
 import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
 import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
+import { objectArraysAreEqual } from './core/logicUtils';
 import TodoItem from './TodoItem';
-import {saveDisk, infoCircle} from './core/icons'
+import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular} from './core/icons'
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
+// TODO: implement crossing out of items to mark them as 'won't do' where they retain their mark/symbol but have a status of 'cancelled' (i.e. "won't do")
+// TODO: implement a 'clone' button that renders only for completed or cancelled items, which clones the item and adds it to the end of the list
 
 const activeListOffset = 0;
 const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
 const appName = "AutoFocus";
-const infoString1 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker.";
-const infoString2 = "The AutoFocus algorithm was designed as a pen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
+const infoString2 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons.";
+const infoString1 = "The AutoFocus algorithm was designed as a pen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
 const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
 const emptyInputErrMsg1 = "New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.";
@@ -25,42 +28,6 @@ const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has t
 const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
 const mismatchDetectedMsg1 = "There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue using?";
 
-// TODO: extract out following logic into separate module as per hexagonal architecture
-function objectsAreEqual(obj1, obj2) {
-  const keys1 = Object.keys(obj1);
-  const keys2 = Object.keys(obj2);
-
-  if (keys1.length !== keys2.length) {
-    return false; // If the objects have different numbers of properties, they are not equal
-  }
-
-  for (const key of keys1) {
-    if (obj1[key] !== obj2[key]) {
-      return false; // If any property values are different, the objects are not equal
-    }
-  }
-
-  return true; // If no differences were found, the objects are equal
-}
-
-// TODO: extract out following logic into separate module as per hexagonal architecture
-function arraysAreEqual(arr1, arr2) {
-  if (arr1.length !== arr2.length) {
-    return false; // If the lengths are different, the arrays are not equal
-  }
-
-  // Sort the arrays by a unique property to ensure the order doesn't affect the comparison
-  const sortedArr1 = arr1.slice().sort((a, b) => a.id - b.id);
-  const sortedArr2 = arr2.slice().sort((a, b) => a.id - b.id);
-
-  for (let i = 0; i < sortedArr1.length; i++) {
-    if (!objectsAreEqual(sortedArr1[i], sortedArr2[i])) {
-      return false; // If any objects are not equal, the arrays are not equal
-    }
-  }
-
-  return true; // If no differences were found, the arrays are equal
-}
 
 function App() {
   const initialTasks = getFromLocalStorage('tasks', []);
@@ -78,6 +45,10 @@ function App() {
   const inputRef = useRef(null);
   const [showingConflictModal, setShowingConflictModal] = useState(false);
   const [textAreaValue, setTextAreaValue] = useState('');
+  // TODO: implement light/dark mode, toggle, and saving to local storage
+  const initialTheme = getFromLocalStorage('theme', 'dark');
+  const [theme, setTheme] = useState(initialTheme);
+
 
   // This effect runs only once after the initial render 
   // because of the empty dependency array [].
@@ -102,7 +73,7 @@ function App() {
         handleListChange(initialTasks);
       }
        else if (listStateWrapperFromURL.result.length !== 0 && initialTasks.length !== 0) {
-        if(arraysAreEqual(listStateWrapperFromURL.result, initialTasks)) {
+        if(objectArraysAreEqual(listStateWrapperFromURL.result, initialTasks)) {
           // we don't have to do anything if the query params and local storage list match
           // console.log("list from query params and list from local storage are the same")
         } else {
@@ -252,6 +223,11 @@ function App() {
     setErrMsg("");
   }
 
+  const handleToggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+    saveToLocalStorage('theme', theme === 'light' ? 'dark' : 'light');
+  }
+
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
     setImportErrMsg("");
@@ -266,6 +242,7 @@ function App() {
         a.click();
         URL.revokeObjectURL(url);
     } else {
+        // TODO: move error string to top of file
         setErrMsg("Failed to export tasks.");
     }
   };
@@ -366,7 +343,7 @@ function App() {
   </div>
   
   return (
-    <main className="app flex flex-column tc f5 montserrat black bg-white vh-100">
+    <main className={`app flex flex-column tc f5 montserrat ${theme === 'light' ? 'black bg-white' : 'white bg-black'} vh-100`}>
       <header className="app-header pa3 flex justify-center items-center">
         <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
         
@@ -374,7 +351,7 @@ function App() {
           <button 
             type="button" 
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingMoreInfo}
-            className="button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn moon-gray"
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleSaveModal}>
               {saveDisk}</button>
         </div>
@@ -383,9 +360,18 @@ function App() {
           <button 
             type="button" 
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal}
-            className="button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn moon-gray"
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleInfoModal}>
               {infoCircle}</button>
+        </div>
+
+        <div className="pl2 inline-flex items-center">
+          <button 
+            type="button" 
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
+            onClick={handleToggleTheme}>
+              {theme === 'light' ? lightbulbSolid : lightbulbRegular}</button>
         </div>
       </header>
 
@@ -397,7 +383,7 @@ function App() {
                 ref={inputRef}
                 id="todo-input"
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
-                className="todo-input pa2 w-100 input-reset br3 ba bw1 b--gray hover-bg-light-gray active-bg-white" 
+                className={`todo-input pa2 w-100 input-reset br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}'}`} 
                 type="text" 
                 placeholder="Add a task..." 
                 value={inputValue}
@@ -414,24 +400,24 @@ function App() {
           <section className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
             <div className="dib">
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
             </div>
@@ -452,29 +438,29 @@ function App() {
 
         {/*prioritization review modal*/}
         {(isPrioritizing && cursor !== -1 && cursor < tasks.length) && 
-          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+          <section className={`absolute f4 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <p className="ph3 lh-copy balance">{genQuestion(tasks, cursor)}</p>
-            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleQuitUI}>Quit</button>
-            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleNoUI}>No</button>
-            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleYesUI}>Yes</button>
           </section>}
 
           {/*'are you sure you want to delete your list?' modal*/}
           {showingDeleteModal &&
-          <section className="absolute f4 top-0 w-100 h-100 bg-white-90">
+          <section className={`absolute f4 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <p className="ph3 lh-copy balance">Are you sure you want to delete your list?</p>
-            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleToggleDeleteModal}>No</button>
-            <button className="br3 w3 fw6 ba bw1 b--gray button-reset bg-moon-gray pa2 pointer ma1"
+            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleDeleteUI}>Yes</button>
           </section>}
 
           {/*save modal*/}
           {showingSaveModal &&
-          <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
+          <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
               <p className="ph3 ma0 lh-copy">{saveInfo1}</p>
@@ -484,12 +470,12 @@ function App() {
                   tabIndex="0" 
                   onKeyDown={handleLabelKeyPress}
                   htmlFor="file-upload" 
-                  className="br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray bg-moon-gray pa2 pointer ma1">
+                  className={`br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}>
                 <span>Import</span>
                 <input id="file-upload" className="dn input-reset"
                     type="file" accept=".json" onChange={handleImportTasks} />
                 </label>
-                <button className="br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1"
+                <button className={`br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                   onClick={handleExportTasks}>Export</button>
               </div>
 
@@ -500,7 +486,7 @@ function App() {
 
               <div className="ph3">
                 <textarea 
-                  className="db input-reset pa2 w-100 resize-none lh-copy br3 ba bw1 b--gray" 
+                  className={`db input-reset pa2 w-100 resize-none lh-copy br3 ba bw1 b--gray ${theme === 'light' ? 'bg-white' : 'bg-black'}`} 
                   rows="2" 
                   value={textAreaValue}
                   onChange={(e) => {
@@ -508,7 +494,7 @@ function App() {
                     setImportErrMsg("");
                   }}
                   placeholder="Paste your list here, with each item on a new line" />
-                <button className="br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer" onClick={handleTextImport}>Submit</button>
+                <button className={`br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer`} onClick={handleTextImport}>Submit</button>
               </div>
               
               <p className="pa3 ma0 lh-copy balance">Click on the 'disk' icon above to close this window.</p>
@@ -518,7 +504,7 @@ function App() {
 
           {/*app info modal*/}
           {showingMoreInfo &&
-          <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
+          <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
               <p className="ph3 pb3 ma0 lh-copy">{infoString1}</p>
@@ -531,7 +517,7 @@ function App() {
           </section>}
 
           {/*local storage and query params conflict resolution modal*/}
-          {showingConflictModal && <section className="absolute f5 top-0 w-100 h-100 bg-white-90">
+          {showingConflictModal && <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="ph3 measure-narrow ml-auto mr-auto tl">
               <p className="ma0 lh-copy">{mismatchDetectedMsg1}</p>
               <p className="fw6 ma0 pt3">1. List from the <em>link</em> address:</p>
@@ -540,11 +526,11 @@ function App() {
               {renderList(initialTasks, initialTasksListOffset)}
                 </section>
                 <button 
-                className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+                className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
                   1. Keep <em>link</em> list</button>
               <button
-                className="br3 f5 fw6 ba dib bw1 grow b--gray button-reset bg-moon-gray pa2 pointer ma1" 
+                className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(initialTasks)}>
                   2. Keep <em>local</em> list</button>
             </section>}
