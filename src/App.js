@@ -204,11 +204,13 @@ function App() {
 
   const handleToggleInfoModal = () => {
     setShowingMoreInfo(!showingMoreInfo);
+    setShowingSaveModal(false);
     setErrMsg("");
   }
 
   const handleToggleSaveModal = () => {
     setShowingSaveModal(!showingSaveModal);
+    setShowingMoreInfo(false);
     setImportErrMsg("");
     setErrMsg("");
   }
@@ -345,7 +347,8 @@ function App() {
         <div className="pl3 inline-flex items-center">
           <button 
             type="button" 
-            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingMoreInfo}
+            /* TODO: set tab-index of menu items to be after other elements when modals are being shown */
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleSaveModal}>
               {saveDisk}</button>
@@ -354,7 +357,7 @@ function App() {
         <div className="pl2 inline-flex items-center">
           <button 
             type="button" 
-            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal}
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleInfoModal}>
               {infoCircle}</button>
@@ -363,7 +366,7 @@ function App() {
         <div className="pl2 inline-flex items-center">
           <button 
             type="button" 
-            disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}
+            /*disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}*/
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleTheme}>
               {theme === 'light' ? lightbulbSolid : lightbulbRegular}</button>
