@@ -2,7 +2,7 @@ import {useState, useEffect, useRef} from 'react';
 import { addTask, addAll, completeBenchmarkTask, benchmarkItem, 
   emptyList, isActionableList, cancelItem, cloneItem } from './core/tasksManager';
 import { startReview, handleReviewDecision, isPrioritizableList, 
-  genQuestion, getInitialCursor } from './core/reviewManager';
+  genCurrentQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
 import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import { objectArraysAreEqual } from './core/logicUtils';
@@ -459,7 +459,7 @@ function App() {
         {/*prioritization review modal*/}
         {(isPrioritizing && cursor !== -1 && cursor < tasks.length) && 
           <section className={`absolute f4 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
-            <p className="ph3 lh-copy balance">{genQuestion(tasks, cursor)}</p>
+            <p className="ph3 lh-copy balance">{genCurrentQuestion(tasks, cursor)}</p>
             <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
                     onClick={handleQuitUI}>Quit</button>
             <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}

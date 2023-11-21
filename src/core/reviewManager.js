@@ -7,7 +7,7 @@ const listNotPrioritizableErrMsg = "The list isn't prioritizable right now.";
 const questionString = (benchmarkItemText, cursorItemText) =>
     `In this moment, are you more ready to '${cursorItemText}' than '${benchmarkItemText}'?`;
   
-export const genQuestion = (tasks, cursor) => {
+export const genCurrentQuestion = (tasks, cursor) => {
     if(cursor === -1 || cursor >= tasks.length) {
         return noValidCursorErrMsg;
     }
