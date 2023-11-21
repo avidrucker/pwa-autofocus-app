@@ -68,3 +68,18 @@ export const addAll = (initialTasks, newTasks) => {
 
   return [...initialTasks, ...updatedNewTasks];
 };
+
+// TODO: test this function, confirm that it works as expected
+export const cancelItem = (tasks, id) => {
+  const updatedTasks = tasks.map(task => 
+    task.id === id ? { ...task, was: task.status, status: "cancelled" } : task
+  );
+  return isAutoMarkableList(updatedTasks) ? automark(updatedTasks) : updatedTasks;
+}
+
+// takes item of a given id and re-adds it to the list
+export const cloneItem = (tasks, id) => {
+  const itemText = tasks.filter(x => x.id === id).at(0).text;
+  const updatedTasks = addTask(tasks, itemText);
+  return updatedTasks;
+}
