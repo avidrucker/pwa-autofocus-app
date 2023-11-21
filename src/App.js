@@ -11,8 +11,6 @@ import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular } from './core/ic
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
-// TODO: implement crossing out of new/ready items to mark them as 'won't do' where they retain their mark/symbol but have a status of 'cancelled' (i.e. "won't do")
-// TODO: implement a 'clone' button that renders only for completed or cancelled items, which clones the item and adds it to the end of the list
 // TODO: implement an 'undo' button that undo's the last action taken, use fa-history icon
 
 const activeListOffset = 0;
@@ -52,7 +50,8 @@ function App() {
   const [theme, setTheme] = useState(initialTheme);
 
 
-  // This effect runs only once after the initial render 
+  // sets focus to new item text input on initial load
+  // Note: this effect runs only once after the initial render 
   // because of the empty dependency array [].
   useEffect(() => {
     if (inputRef.current) {
