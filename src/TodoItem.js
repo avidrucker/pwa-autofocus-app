@@ -22,6 +22,8 @@ function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
           statusToSymbol(task.was)}</span>
       <span className={`${task.status === "cancelled" && "strike"}`}>{task.text}</span>
       <div className="relative ml1 h-15">
+        {cancelFunc && cloneFunc &&
+        <>
       {task.status === "new" || task.status === "ready" ?
         <button 
           title="Cancel Task" 
@@ -32,7 +34,7 @@ function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
           title="Clone Task" 
           onClick={cloneFunc} 
           className={`button-reset pa1 hover-button w2 h-15 pointer bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}>
-            {repeatArrow}</button>}
+            {repeatArrow}</button>}</>}
         </div>
     </li>
   );

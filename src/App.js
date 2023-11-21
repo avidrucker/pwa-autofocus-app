@@ -12,6 +12,7 @@ import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
 // TODO: implement an 'undo' button that undo's the last action taken, use fa-history icon
+// TODO: restrict 'next actionable item' text to 2 lines, end with ellipses if it exceeds that
 
 const activeListOffset = 0;
 const queryStringListOffset = 100;
@@ -27,7 +28,7 @@ const cannotTakeActionErrMsg1 = "There are no actionable tasks in your list.";
 const emptyTextAreaErrMsg1 = "New items cannot be empty or whitespace only.";
 const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has the correct format.";
 const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
-const mismatchDetectedMsg1 = "There is a mismatch between the list loaded from the link address and what is saved locally. Which list would you like to continue using?";
+const mismatchDetectedMsg1 = "The link list and local storage list do not match. Which will you keep?";
 
 
 function App() {
@@ -332,26 +333,36 @@ function App() {
     setShowingConflictModal(false);
   }
 
-  // idOffset is here for the purposes of rendering multiple
+  // renders a list of tasks, with optional interactive buttons
+  // Note: idOffset is here for the purposes of rendering multiple
   // lists at once, such as when evaluating conflicting
-  // lists in localStorage and query params
-  const renderList = (inputList, idOffset) => <div className="ph3 pb3">
+  // lists in localStorage and query params.
+  // Note: the lists rendered in the conflict modal are not interactive
+  const renderList = (inputList, idOffset, interactive) => <div className="ph3">
     <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
-      {inputList.map(task => (
+    {interactive ?
+      <> {inputList.map(task => (
         <TodoItem 
           key={task.id + idOffset} 
-          task={task} 
-          isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
+          task={task}  
           cancelFunc={() => handleListChange(cancelItem(inputList, task.id))}
           cloneFunc={() => handleListChange(cloneItem(inputList, task.id))}
+          isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
+          theme={theme}
+        />))} </> :
+      <> {inputList.map(task => (
+        <TodoItem 
+          key={task.id + idOffset} 
+          task={task}
+          isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
           theme={theme}
         />
-      ))}
+      ))}</>}
     </ul>
   </div>;
   
   return (
-    <main className={`app flex flex-column tc f5 montserrat ${theme === 'light' ? 'black bg-white' : 'white bg-black'} vh-100`}>
+    <main className={`app flex flex-column tc f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
       <header className="app-header pa3 flex justify-center items-center">
         <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
         
@@ -406,7 +417,7 @@ function App() {
 
           {errMsg && <p className="lh-copy red ml-auto mr-auto measure ma0 pt3 ph3 balance">{errMsg}</p>}
 
-          <section className="pv3 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
+          <section className="pt3 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
@@ -433,7 +444,7 @@ function App() {
           </section>
         </form>
         
-        {tasks.length > 0 && renderList(tasks, activeListOffset)}
+        {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
 
         <div className="ph3 pb3">
           <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
@@ -529,11 +540,12 @@ function App() {
           {showingConflictModal && <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="ph3 measure-narrow ml-auto mr-auto tl">
               <p className="ma0 lh-copy">{mismatchDetectedMsg1}</p>
-              <p className="fw6 ma0 pt3">1. List from the <em>link</em> address:</p>
+              <p className="fw6 ma0 pt2">1. List from the <em>link</em> address:</p>
               {renderList(deserializeQueryStringToListStateWrapper(window.location.search).result, queryStringListOffset)}
-              <p className="fw6 ma0">2. List from <em>local</em> storage:</p>
+              <p className="fw6 ma0 pt2">2. List from <em>local</em> storage:</p>
               {renderList(initialTasks, initialTasksListOffset)}
-                </section>
+            </section>
+            <div className="pb3">
                 <button 
                 className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
@@ -542,6 +554,7 @@ function App() {
                 className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(initialTasks)}>
                   2. Keep <em>local</em> list</button>
+              </div>
             </section>}
 
       </section>
