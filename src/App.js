@@ -11,8 +11,9 @@ import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular } from './core/ic
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
-// TODO: implement crossing out of items to mark them as 'won't do' where they retain their mark/symbol but have a status of 'cancelled' (i.e. "won't do")
+// TODO: implement crossing out of new/ready items to mark them as 'won't do' where they retain their mark/symbol but have a status of 'cancelled' (i.e. "won't do")
 // TODO: implement a 'clone' button that renders only for completed or cancelled items, which clones the item and adds it to the end of the list
+// TODO: implement an 'undo' button that undo's the last action taken, use fa-history icon
 
 const activeListOffset = 0;
 const queryStringListOffset = 100;
@@ -47,7 +48,6 @@ function App() {
   const inputRef = useRef(null);
   const [showingConflictModal, setShowingConflictModal] = useState(false);
   const [textAreaValue, setTextAreaValue] = useState('');
-  // TODO: implement light/dark mode, toggle, and saving to local storage
   const initialTheme = getFromLocalStorage('theme', 'dark');
   const [theme, setTheme] = useState(initialTheme);
 
@@ -92,6 +92,7 @@ function App() {
     } else {
       // TODO: detect invalid query string and render error message accordingly
       if(listStateWrapperFromURL.error) {
+        // TODO: move error string to top of file
         setErrMsg("Invalid list query parameters detected. Reverting to local storage list data.");
       }
       // invalid query string found or missing query string, so, let's rebuild it 
@@ -103,7 +104,7 @@ function App() {
   }, []); // The empty dependency array ensures this effect runs once on mount
 
   useEffect(()=>{
-    saveCursorToLocal();
+    saveToLocalStorage('cursor', cursor);
     if(cursor === -1) {
       setIsPrioritizing(false);
     }
@@ -111,7 +112,7 @@ function App() {
   }, [cursor]);
 
   useEffect(() => {
-    saveIsPrioritizingToLocal();
+    saveToLocalStorage('isPrioritizing', isPrioritizing);
     if(isPrioritizing) {
       setCursor(getInitialCursor(tasks));
     } else {
@@ -126,18 +127,6 @@ function App() {
       inputRef.current.focus();
     }
   }, [showingDeleteModal, tasks.length]);
-
-  const saveTasksToLocal = (tasks) => {
-    saveToLocalStorage('tasks', tasks);
-  };
-
-  const saveCursorToLocal = () => {
-    saveToLocalStorage('cursor', cursor);
-  };
-
-  const saveIsPrioritizingToLocal = () => {
-    saveToLocalStorage('isPrioritizing', isPrioritizing);
-  };
 
   const handlePrioritizeUI = () => {
     const result = startReview(tasks);
@@ -158,7 +147,7 @@ function App() {
     window.history.pushState({}, '', queryString);
   
     setTasks(newListState);
-    saveTasksToLocal(newListState);
+    saveToLocalStorage('tasks', newListState);
   };
 
   const handleAddTaskUI = (e) => {
@@ -319,11 +308,13 @@ function App() {
       const listState = JSON.parse(decodeURIComponent(atob(serializedState)));
       return {result: listState};
     } catch (error) {
-      console.error('Failed to deserialize query string:', error);
-      return {error: 'Malformed query string'};
+        console.error('Failed to deserialize query string:', error);
+        return {error: 'Malformed query string'};
     }
   };
 
+  // takes in the user's choice of new list, updates the list, 
+  // and closes the modal
   const handleListConflictChoice = (newListState) => {
     handleListChange(newListState);
     setShowingConflictModal(false);
@@ -345,7 +336,7 @@ function App() {
         />
       ))}
     </ul>
-  </div>
+  </div>;
   
   return (
     <main className={`app flex flex-column tc f5 montserrat ${theme === 'light' ? 'black bg-white' : 'white bg-black'} vh-100`}>
