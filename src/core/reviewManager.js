@@ -68,6 +68,9 @@ export const startReview = (tasks) => {
         // TODO: add clear reason why list isn't prioritizable
         // for example, because there are no new items, or, because 
         // the last non-done item is marked as ready already
+        // TODO: create helper function that gives reason for 
+        // why a list isn't prioritizable (either the list is fully
+        // prioritized, or, it has no new items)
         return { error: listNotPrioritizableErrMsg };
     }
 
