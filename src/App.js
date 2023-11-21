@@ -1,11 +1,13 @@
 import {useState, useEffect, useRef} from 'react';
-import { addTask, addAll, completeBenchmarkTask, benchmarkItem, emptyList, isActionableList } from './core/tasksManager';
-import { startReview, handleReviewDecision, isPrioritizableList, genQuestion, getInitialCursor } from './core/reviewManager';
+import { addTask, addAll, completeBenchmarkTask, benchmarkItem, 
+  emptyList, isActionableList, cancelItem, cloneItem } from './core/tasksManager';
+import { startReview, handleReviewDecision, isPrioritizableList, 
+  genQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
 import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
 import { objectArraysAreEqual } from './core/logicUtils';
 import TodoItem from './TodoItem';
-import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular} from './core/icons'
+import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
@@ -337,6 +339,9 @@ function App() {
           key={task.id + idOffset} 
           task={task} 
           isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
+          cancelFunc={() => handleListChange(cancelItem(inputList, task.id))}
+          cloneFunc={() => handleListChange(cloneItem(inputList, task.id))}
+          theme={theme}
         />
       ))}
     </ul>
