@@ -69,3 +69,10 @@
     display: inline-block;
   }
 }
+
+/* courtesy of css-tricks */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;  
+}

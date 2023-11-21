@@ -446,12 +446,12 @@ function App() {
         
         {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
 
-        <div className="ph3 pb3">
+        <div className="ph3 pb3 o-50">
           <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
           </p>
 
-          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
+          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance line-clamp-3 overflow-hidden">
             {(benchmarkItem(tasks) !== null) && `The next actionable item is '${benchmarkItem(tasks).text}'.`}
           </p>
         </div>
