@@ -15,12 +15,12 @@ function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
   return (
     <li className={`flex lh-copy align-start mb1 ${
       (task.status === "done" || task.status === "cancelled") && "o-50"} ${
-        isBenchmark ? "fw6" : "fw4"} ${task.status === "cancelled" && "strike"}`}>
+        isBenchmark ? "fw6" : "fw4"}`}>
       <span title={task.status} className="mr1 dib h-15">
         {(statusToSymbol(task.status) !== null) ?
           statusToSymbol(task.status) :
           statusToSymbol(task.was)}</span>
-      <span className={``}>{task.text}</span>
+      <span className={`${task.status === "cancelled" && "strike"}`}>{task.text}</span>
       <div className="relative ml1 h-15">
       {task.status === "new" || task.status === "ready" ?
         <button 
