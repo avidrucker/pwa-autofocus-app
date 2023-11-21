@@ -1,5 +1,8 @@
 import { hasReady, hasNew } from './taskUtils';
 
+// TODO: make consistent across project to use either 
+// 'task' or 'item' term, but not both (domain language)
+
 export const nextId = (tasks) => {
   return tasks.length === 0 ? 
     0 : 
@@ -7,7 +10,7 @@ export const nextId = (tasks) => {
 }
 
 // the benchmark item, also called the priority item, 
-// is the last ready item in a list
+// is the last ready item in a list (domain language)
 export const benchmarkItem = (tasks) => {
   if(!hasReady(tasks)) return null;
 
@@ -19,7 +22,7 @@ const isAutoMarkableList = (tasks) => {
   return hasNew(tasks) && !hasReady(tasks);
 };
 
-// marks the first new item
+// marks the first new item if the list is automarkable
 const automark = (tasks) => {
   if(!isAutoMarkableList) {
     return tasks;
