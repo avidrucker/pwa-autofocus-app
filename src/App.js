@@ -59,6 +59,17 @@ function App() {
     }
   }, []);
 
+  // sets the background color of the page based on the theme
+  useEffect(() => {
+    if (theme === 'light') {
+      document.body.classList.add('bg-white');
+      document.body.classList.remove('bg-black');
+    } else {
+      document.body.classList.add('bg-black');
+      document.body.classList.remove('bg-white');
+    }
+  }, [theme]);
+
   useEffect(() => {
     // Attempt to load the list state from the URL
     const listStateWrapperFromURL = deserializeQueryStringToListStateWrapper(window.location.search);
