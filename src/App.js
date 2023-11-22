@@ -19,17 +19,19 @@ const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
 const appName = "AutoFocus";
-const infoString2 = "AutoFocus was designed by Mark Forster. This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons.";
-const infoString1 = "The AutoFocus algorithm was designed as a pen and paper method to help increase productivity. It does so by limiting list interaction to a minimum, and by providing a simple (binary) decision-making framework.";
+const infoString2 = "This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons.";
+const infoString1 = "The AutoFocus algorithm was designed by Mark Forster as a pen and paper method to help increase productivity. It does so by limiting list interaction and providing a simple (binary) decision-making framework.";
 const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
-const emptyInputErrMsg1 = "New items cannot be empty or whitespace only, please type some text into the text input above and then tap 'Add Task'.";
+const emptyInputErrMsg1 = "New items cannot be empty or only whitespace.";
 const cannotTakeActionErrMsg1 = "There are no actionable tasks in your list.";
 const emptyTextAreaErrMsg1 = "New items cannot be empty or whitespace only.";
 const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has the correct format.";
 const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
 const mismatchDetectedMsg1 = "The link list and local storage list do not match. Which will you keep?";
-
+const confirmListDelete = "Are you sure you want to delete your list? This action cannot be undone.";
+const clickDiskToClose = "Click on the 'disk' icon above to close this window.";
+const clickIcircleToClose = "Click on the 'i' icon above to close this window.";
 
 function App() {
   const initialTasks = getFromLocalStorage('tasks', []);
@@ -362,7 +364,7 @@ function App() {
   </div>;
   
   return (
-    <main className={`app flex flex-column tc f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
+    <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
       <header className="app-header pa3 flex justify-center items-center">
         <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
         
@@ -395,7 +397,7 @@ function App() {
         </div>
       </header>
 
-      <section className="app-container relative">
+      <section className="app-container relative flex flex-column h-100">
         <form className="ph3">
           <div>
             <div className="measure-narrow ml-auto mr-auto">
@@ -415,9 +417,9 @@ function App() {
             </div>
           </div>
 
-          {errMsg && <p className="lh-copy red ml-auto mr-auto measure ma0 pt3 ph3 balance">{errMsg}</p>}
+          {errMsg && <p className="lh-135 red ml-auto mr-auto measure-narrow ma0 pt2">{errMsg}</p>}
 
-          <section className="pt3 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
+          <section className="pt2 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
@@ -444,38 +446,48 @@ function App() {
           </section>
         </form>
         
-        {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
+        <section className="">
+          {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
+        </section>
 
-        <div className="ph3 pb3 o-50">
-          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance">
+        <div className="ph3 pb3">
+          <p className="ma0 o-50 measure-narrow ml-auto mr-auto lh-135">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
           </p>
 
-          <p className="ma0 measure-narrow ml-auto mr-auto lh-copy balance line-clamp-3 overflow-hidden">
+          <p className="ma0 o-50 measure-narrow ml-auto mr-auto lh-135 line-clamp-3 overflow-hidden">
             {(benchmarkItem(tasks) !== null) && `The next actionable item is '${benchmarkItem(tasks).text}'.`}
           </p>
         </div>
 
         {/*prioritization review modal*/}
         {(isPrioritizing && cursor !== -1 && cursor < tasks.length) && 
-          <section className={`absolute f4 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
-            <p className="ph3 lh-copy balance">{genCurrentQuestion(tasks, cursor)}</p>
-            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                    onClick={handleQuitUI}>Quit</button>
-            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                    onClick={handleNoUI}>No</button>
-            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                    onClick={handleYesUI}>Yes</button>
+          <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="measure-narrow ml-auto mr-auto">
+              <p className="lh-135">{genCurrentQuestion(tasks, cursor)}</p>
+              <div className="tc">
+                <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                        onClick={handleQuitUI}>Quit</button>
+                <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                        onClick={handleNoUI}>No</button>
+                <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                        onClick={handleYesUI}>Yes</button>
+              </div>
+            </section>
           </section>}
 
           {/*'are you sure you want to delete your list?' modal*/}
           {showingDeleteModal &&
-          <section className={`absolute f4 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
-            <p className="ph3 lh-copy balance">Are you sure you want to delete your list?</p>
-            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                    onClick={handleToggleDeleteModal}>No</button>
-            <button className={`br3 w3 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                    onClick={handleDeleteUI}>Yes</button>
+          <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="measure-narrow ml-auto mr-auto">
+              <p className="lh-135">{confirmListDelete}</p>
+              <div className="tc">
+                <button className={`br3 w4 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                        onClick={handleToggleDeleteModal}>No</button>
+                <button className={`br3 w4 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                        onClick={handleDeleteUI}>Yes</button>
+              </div>
+            </section>
           </section>}
 
           {/*save modal*/}
@@ -483,9 +495,9 @@ function App() {
           <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
-              <p className="ph3 ma0 lh-copy">{saveInfo1}</p>
+              <p className="ph3 ma0 lh-135">{saveInfo1}</p>
               
-              <div className="pb3 tc">
+              <div className="tc">
                 <label 
                   tabIndex="0" 
                   onKeyDown={handleLabelKeyPress}
@@ -500,13 +512,13 @@ function App() {
               </div>
 
               {importErrMsg && 
-                <p className="ph3 pb3 ma0 lh-copy measure ml-auto mr-auto red">{importErrMsg}</p>}
+                <p className="ph3 pt2 ma0 lh-135 measure ml-auto mr-auto red">{importErrMsg}</p>}
               
-              <p className="ph3 pb1 ma0 lh-copy">{saveInfo2}</p>
+              <p className="ph3 pt2 ma0 lh-135">{saveInfo2}</p>
 
-              <div className="ph3">
+              <div className="ph3 pt1">
                 <textarea 
-                  className={`db input-reset pa2 w-100 resize-none lh-copy br3 ba bw1 b--gray ${theme === 'light' ? 'bg-white' : 'bg-black'}`} 
+                  className={`db input-reset pa2 w-100 resize-none lh-135 br3 ba bw1 b--gray ${theme === 'light' ? 'bg-white' : 'bg-black'}`} 
                   rows="2" 
                   value={textAreaValue}
                   onChange={(e) => {
@@ -517,29 +529,29 @@ function App() {
                 <button className={`br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer`} onClick={handleTextImport}>Submit</button>
               </div>
               
-              <p className="pa3 ma0 lh-copy balance">Click on the 'disk' icon above to close this window.</p>
+              <p className="pt2 ph3 pb3 ma0 lh-135">{clickDiskToClose}</p>
             </section>
-            <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleSaveModal} type="button">Close Save Modal</button>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleSaveModal} type="button">Close Save Modal</button>
           </section>}
 
           {/*app info modal*/}
           {showingMoreInfo &&
-          <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+          <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
-              <p className="ph3 pb3 ma0 lh-copy">{infoString1}</p>
+              <p className="pb3 ma0 lh-135">{infoString1}</p>
 
-              <p className="ph3 pb3 ma0 lh-copy">{infoString2}</p>
+              <p className="pb3 ma0 lh-135">{infoString2}</p>
 
-              <p className="ph3 pb3 ma0 lh-copy balance">Click on the 'i' icon above to close this window.</p>
+              <p className="pb3 ma0 lh-135">{clickIcircleToClose}</p>
             </section>
-            <button className="absolute z-0 top-0 left-0 w-100 o-0 vh-75" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
           </section>}
 
           {/*local storage and query params conflict resolution modal*/}
-          {showingConflictModal && <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
-            <section className="ph3 measure-narrow ml-auto mr-auto tl">
-              <p className="ma0 lh-copy">{mismatchDetectedMsg1}</p>
+          {showingConflictModal && <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="measure-narrow ml-auto mr-auto tl">
+              <p className="ma0 lh-135">{mismatchDetectedMsg1}</p>
               <p className="fw6 ma0 pt2">1. List from the <em>link</em> address:</p>
               {renderList(deserializeQueryStringToListStateWrapper(window.location.search).result, queryStringListOffset)}
               <p className="fw6 ma0 pt2">2. List from <em>local</em> storage:</p>
