@@ -1,11 +1,11 @@
 {
-  "short_name": "To-Do PWA",
-  "name": "React To-Do List Progressive Web App",
+  "short_name": "AutoFocus",
+  "name": "AutoFocus Task Management App",
   "id": "/pwa-autofocus-app/",
   "icons": [
     {
       "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
+      "sizes": "32x32",
       "type": "image/x-icon"
     },
     {
@@ -19,8 +19,46 @@
       "sizes": "512x512"
     }
   ],
+  "screenshots": [
+    {
+        "src": "screenshot1.png",
+        "sizes": "750x1334",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot2.png",
+        "sizes": "750x1334",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label":"AutoFocus "
+    },
+    {
+        "src": "screenshot3.png",
+        "sizes": "750x1334",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot4.png",
+        "sizes": "750x1334",
+        "type": "image/png",
+        "form_factor": "narrow",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot5.png",
+        "sizes": "1432x765",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label":"AutoFocus"
+    }
+    ],
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "description": "Stay focused and productive with AutoFocus."
 }
