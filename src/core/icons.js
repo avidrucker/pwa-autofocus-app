@@ -27,9 +27,15 @@ export const lightbulbRegular = <svg fill="currentColor" viewBox="0 0 352 512"  
 </svg>;
 
 // aliases in font awesome: fa-remove, fa-times, fa-close
-export const cancelX = <svg fill="currentColor" viewBox="0 0 352 512" height="1rem" xmlns="http://www.w3.org/2000/svg">
+export const deleteX = <svg fill="currentColor" viewBox="0 0 352 512" height="1rem" xmlns="http://www.w3.org/2000/svg">
 <path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"></path>
 </svg>;
+
+// Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools 
+export const duplicateCube = <svg height="1rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8 15.9615C3.92665 15.7245 3 14.3107 3 9.5C3 4.14725 4.14725 3 9.5 3C14.3107 3 15.7245 3.92665 15.9615 8" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
+<path d="M8 14.5C8 9.14725 9.14725 8 14.5 8C19.8527 8 21 9.14725 21 14.5C21 19.8527 19.8527 21 14.5 21C9.14725 21 8 19.8527 8 14.5Z" stroke="currentColor" strokeWidth="3"/>
+</svg>
 
 // path made with https://yqnn.github.io/svg-path-editor/
 export const checkmark = <svg fill="currentColor" viewBox="0 0 512 512" height="1rem" xmlns="http://www.w3.org/2000/svg">
@@ -40,3 +46,4 @@ export const checkmark = <svg fill="currentColor" viewBox="0 0 512 512" height="
 export const repeatArrow = <svg fill="currentColor" viewBox="0 0 512 512" height="1rem" xmlns="http://www.w3.org/2000/svg">
 <path d="M256.455 8c66.269.119 126.437 26.233 170.859 68.685l35.715-35.715C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.75c-30.864-28.899-70.801-44.907-113.23-45.273-92.398-.798-170.283 73.977-169.484 169.442C88.764 348.009 162.184 424 256 424c41.127 0 79.997-14.678 110.629-41.556 4.743-4.161 11.906-3.908 16.368.553l39.662 39.662c4.872 4.872 4.631 12.815-.482 17.433C378.202 479.813 319.926 504 256 504 119.034 504 8.001 392.967 8 256.002 7.999 119.193 119.646 7.755 256.455 8z"></path>
 </svg>;
+

@@ -83,3 +83,17 @@ export const cloneItem = (tasks, id) => {
   const updatedTasks = addTask(tasks, itemText);
   return updatedTasks;
 }
+
+// takes item of a given id and removes it from the list
+export const deleteItem = (tasks, id) => {
+  const updatedTasks = tasks.filter(task => task.id !== id);
+  return updatedTasks;
+}
+
+// takes item of a given id and marks it as ready
+export const redoItem = (tasks, id) => {
+  const updatedTasks = tasks.map(task => 
+    task.id === id ? { ...task, status: "ready" } : task
+  );
+  return updatedTasks;
+}

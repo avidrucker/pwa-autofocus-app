@@ -1,6 +1,6 @@
 import {useState, useEffect, useRef} from 'react';
 import { addTask, addAll, completeBenchmarkTask, benchmarkItem, 
-  emptyList, isActionableList, cancelItem, cloneItem } from './core/tasksManager';
+  emptyList, isActionableList, cancelItem, cloneItem, deleteItem, redoItem} from './core/tasksManager';
 import { startReview, handleReviewDecision, isPrioritizableList, 
   genCurrentQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
@@ -354,7 +354,7 @@ function App() {
   // lists in localStorage and query params.
   // Note: the lists rendered in the conflict modal are not interactive
   const renderList = (inputList, idOffset, interactive) => <div className="ph3">
-    <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
+    <ul className="ph0 todo-list list ma0 tl measure ml-auto mr-auto">
     {interactive ?
       <> {inputList.map(task => (
         <TodoItem 
@@ -362,31 +362,33 @@ function App() {
           task={task}  
           cancelFunc={() => handleListChange(cancelItem(inputList, task.id))}
           cloneFunc={() => handleListChange(cloneItem(inputList, task.id))}
+          redoFunc={() => handleListChange(redoItem(inputList, task.id))}
           isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
           theme={theme}
-        />))} </> :
-      <> {inputList.map(task => (
-        <TodoItem 
-          key={task.id + idOffset} 
-          task={task}
-          isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
-          theme={theme}
-        />
-      ))}</>}
-    </ul>
-  </div>;
-  
-  return (
-    <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
-      <header className="app-header pa3 flex justify-center items-center">
-        <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
-        
-        <div className="pl3 inline-flex items-center">
-          <button 
-            type="button" 
-            /* TODO: set tab-index of menu items to be after other elements when modals are being shown */
-            disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
-            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
+          deleteFunc={() => handleListChange(deleteItem(inputList, task.id))}
+          />))} </> :
+          <> {inputList.map(task => (
+          <TodoItem 
+            key={task.id + idOffset} 
+            task={task}
+            isBenchmark={benchmarkItem(inputList) !== null && benchmarkItem(inputList).id === task.id}
+            theme={theme}
+          />
+          ))}</>}
+          </ul>
+          </div>;
+
+          return (
+          <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
+          <header className="app-header pa3 flex justify-center items-center">
+            <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
+
+            <div className="pl3 inline-flex items-center">
+              <button 
+                type="button" 
+                /* TODO: set tab-index of menu items to be after other elements when modals are being shown */
+                disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
+                className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
             onClick={handleToggleSaveModal}>
               {saveDisk}</button>
         </div>
