@@ -1,5 +1,5 @@
 import React from 'react';
-import {dotCircle, emptyCircle, filledCircle, 
+import {dotCircle, emptyCircle, filledCircle, checkmark,
   cancelX, repeatArrow} from './core/icons'
 
 // converts the all possible statuses *except* for 
@@ -29,7 +29,7 @@ function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
           title="Cancel Task" 
           onClick={cancelFunc} 
           className={`button-reset pa1 hover-button w2 h-15 pointer bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}>
-            {cancelX}</button> : 
+            {checkmark}</button> : 
         <button 
           title="Clone Task" 
           onClick={cloneFunc} 
