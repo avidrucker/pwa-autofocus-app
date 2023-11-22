@@ -571,7 +571,7 @@ function App() {
               <p className="fw6 ma0 pt2">2. List from <em>local</em> storage:</p>
               {renderList(initialTasks, initialTasksListOffset)}
             </section>
-            <div className="pb3">
+            <div className="pb3 tc">
                 <button 
                 className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
