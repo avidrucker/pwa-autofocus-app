@@ -32,6 +32,10 @@ const mismatchDetectedMsg1 = "The link list and local storage list do not match.
 const confirmListDelete = "Are you sure you want to delete your list? This action cannot be undone.";
 const clickDiskToClose = "Click on the 'disk' icon above to close this window.";
 const clickIcircleToClose = "Click on the 'i' icon above to close this window.";
+const invalidQueryParamsErrMsg1 = "Invalid list query parameters detected. Reverting to local storage list data.";
+const nothingToDeleteErrMsg1 = "There is nothing to delete.";
+const rebuildingQueryParamsConsoleMsg1 = "rebuilding query params from local storage";
+const exportFailErrMsg1 = "Failed to export tasks.";
 
 function App() {
   const initialTasks = getFromLocalStorage('tasks', []);
@@ -62,6 +66,8 @@ function App() {
     }
   }, []);
 
+  // TODO: test setting main element bg color instead of body
+  // now that html, body, and the #root div are all 100% height
   // sets the background color of the page based on the theme
   useEffect(() => {
     if (theme === 'light') {
@@ -73,6 +79,8 @@ function App() {
     }
   }, [theme]);
 
+  // useEffect that loads list state on page load, attempts to get a list from
+  // the URL and local storage, checks for any errors or potential conflicts
   useEffect(() => {
     // Attempt to load the list state from the URL
     const listStateWrapperFromURL = deserializeQueryStringToListStateWrapper(window.location.search);
@@ -80,42 +88,43 @@ function App() {
     if(listStateWrapperFromURL.result) {
       if (listStateWrapperFromURL.result.length !== 0 && initialTasks.length === 0) {
         // If URL state is present and local storage is empty, use the URL state
-        // console.log("using URL state")
+        // console.info("using URL state")
         handleListChange(listStateWrapperFromURL.result);
       } else if (listStateWrapperFromURL.result.length === 0 && initialTasks.length !== 0) {
         // If URL state is not present, default to using local storage state if it exists
-        // console.log("URL state not found, defaulting to local storage")
+        // console.info("URL state not found, defaulting to local storage")
         handleListChange(initialTasks);
       }
        else if (listStateWrapperFromURL.result.length !== 0 && initialTasks.length !== 0) {
         if(objectArraysAreEqual(listStateWrapperFromURL.result, initialTasks)) {
           // we don't have to do anything if the query params and local storage list match
-          // console.log("list from query params and list from local storage are the same")
+          // console.info("list from query params and list from local storage are the same")
         } else {
           // however, if we have two different lists from query params and local storage,
           // we will prompt the user to choose which one to use
-          // console.log("conflict found, activating conflict resolution modal")
+          // console.info("conflict found, activating conflict resolution modal")
           setShowingConflictModal(true);
         }
       } else {
         // Neither state exists, so we will have an empty default list
-        // console.log("No state found in address bar or local storage")
+        // console.info("No state found in address bar or local storage")
         handleListChange(initialTasks);
       }
     } else {
-      // TODO: detect invalid query string and render error message accordingly
       if(listStateWrapperFromURL.error) {
-        // TODO: move error string to top of file
-        setErrMsg("Invalid list query parameters detected. Reverting to local storage list data.");
+        setErrMsg(invalidQueryParamsErrMsg1);
       }
-      // invalid query string found or missing query string, so, let's rebuild it 
-      // and save it back to the query params
-      console.info("rebuilding query params from local storage")
+      // TODO: confirm there is no valid 'else' path here
+      // invalid query string found or missing query string, so
+      // let's rebuild it and save it back to the query params
+      console.info(rebuildingQueryParamsConsoleMsg1);
       handleListChange(initialTasks);
     }
     // eslint-disable-next-line
   }, []); // The empty dependency array ensures this effect runs once on mount
 
+  // useEffect that save cursor to local storage every time the cursor changes
+  // it also sets the isPrioritizing state to false if the cursor is -1
   useEffect(()=>{
     saveToLocalStorage('cursor', cursor);
     if(cursor === -1) {
@@ -124,6 +133,9 @@ function App() {
     // eslint-disable-next-line
   }, [cursor]);
 
+  // useEffect that saves isPrioritizing to local storage every time it changes
+  // it also updates the cursor to either the first reviewable item or -1 
+  // depending on whether or not isPrioritizing is true
   useEffect(() => {
     saveToLocalStorage('isPrioritizing', isPrioritizing);
     if(isPrioritizing) {
@@ -144,11 +156,11 @@ function App() {
   const handlePrioritizeUI = () => {
     const result = startReview(tasks);
     if (result.error) {
-        setErrMsg(result.error);
+      setErrMsg(result.error);
     } else {
-        setIsPrioritizing(!isPrioritizing);
-        setCursor(result.cursor);
-        setErrMsg("");
+      setIsPrioritizing(!isPrioritizing);
+      setCursor(result.cursor);
+      setErrMsg("");
     }
   };
 
@@ -210,7 +222,7 @@ function App() {
 
   const handleToggleDeleteModal = () => {
     if(tasks.length === 0) {
-      setErrMsg("There are no tasks to clear.");
+      setErrMsg(nothingToDeleteErrMsg1);
     } else {
       setShowingDeleteModal(!showingDeleteModal); 
     }
@@ -248,8 +260,7 @@ function App() {
         a.click();
         URL.revokeObjectURL(url);
     } else {
-        // TODO: move error string to top of file
-        setErrMsg("Failed to export tasks.");
+        setErrMsg(exportFailErrMsg1);
     }
   };
 
@@ -323,6 +334,8 @@ function App() {
       const listState = JSON.parse(decodeURIComponent(atob(serializedState)));
       return {result: listState};
     } catch (error) {
+        // TODO: move errors strings to top of file, decide whether 
+        // to use verbose or custom error messages
         console.error('Failed to deserialize query string:', error);
         return {error: 'Malformed query string'};
     }
@@ -447,6 +460,7 @@ function App() {
         </form>
         
         <section className="">
+          {/* Note: the true on the next line turns ON cancel/clone buttons */}
           {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
         </section>
 
