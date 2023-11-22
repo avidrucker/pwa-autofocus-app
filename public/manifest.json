@@ -50,7 +50,28 @@
     },
     {
         "src": "screenshot5.png",
-        "sizes": "1432x765",
+        "sizes": "1219x750",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot6.png",
+        "sizes": "1219x750",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot7.png",
+        "sizes": "1219x750",
+        "type": "image/png",
+        "form_factor": "wide",
+        "label":"AutoFocus"
+    },
+    {
+        "src": "screenshot8.png",
+        "sizes": "1219x750",
         "type": "image/png",
         "form_factor": "wide",
         "label":"AutoFocus"
