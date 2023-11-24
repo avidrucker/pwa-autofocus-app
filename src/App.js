@@ -418,7 +418,7 @@ function App() {
                 ref={inputRef}
                 id="todo-input"
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
-                className={`todo-input pa2 w-100 input-reset br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}'}`} 
+                className={`todo-input pa2 w-100 input-reset br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}`} 
                 type="text" 
                 placeholder="Add a task..." 
                 value={inputValue}
@@ -532,7 +532,7 @@ function App() {
 
               <div className="ph3 pt1">
                 <textarea 
-                  className={`db input-reset pa2 w-100 resize-none lh-135 br3 ba bw1 b--gray ${theme === 'light' ? 'bg-white' : 'bg-black'}`} 
+                  className={`db input-reset pa2 w-100 resize-none lh-135 br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}`} 
                   rows="2" 
                   value={textAreaValue}
                   onChange={(e) => {
