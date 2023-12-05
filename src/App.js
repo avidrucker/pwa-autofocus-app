@@ -19,7 +19,7 @@ const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
 const appName = "AutoFocus";
-const infoString2 = "This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons.";
+const infoString2 = "This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons CSS.";
 const infoString1 = "The AutoFocus algorithm was designed by Mark Forster as a pen and paper method to help increase productivity. It does so by limiting list interaction and providing a simple (binary) decision-making framework.";
 const saveInfo1 = "You can import and export JSON lists into and out of AutoFocus.";
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
