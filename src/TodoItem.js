@@ -13,7 +13,7 @@ const statusToSymbol = status => {
 
 function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
   return (
-    <li className={`flex lh-135 align-start mb1 ${
+    <li className={`flex lh-135 align-start mb1-butlast ${
       (task.status === "done" || task.status === "cancelled") && "o-50"} ${
         isBenchmark ? "fw6" : "fw4"}`}>
       <span title={task.status} className="mr1 dib h-15">
