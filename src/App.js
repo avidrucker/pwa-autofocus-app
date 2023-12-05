@@ -378,7 +378,7 @@ function App() {
   
   return (
     <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
-      <header className="app-header pa3 flex justify-center items-center">
+      <header className="app-header pa3 pb2 flex justify-center items-center">
         <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
         
         <div className="pl3 inline-flex items-center">
@@ -464,7 +464,7 @@ function App() {
           {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
         </section>
 
-        <div className="ph3 pb3">
+        <div className="ph3 pt2 pb3">
           <p className="ma0 o-50 measure-narrow ml-auto mr-auto lh-135">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
           </p>
