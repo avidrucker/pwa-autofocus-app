@@ -379,7 +379,7 @@ function App() {
   return (
     <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
       <header className="app-header pa3 pb2 flex justify-center items-center">
-        <h1 className="ma0 f2 fw8 tracked-custom dib">{appName}</h1>
+        <h1 className={`ma0 f2 fw8 tracked-custom dib ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}>{appName}</h1>
         
         <div className="pl3 inline-flex items-center">
           <button 
