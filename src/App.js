@@ -384,6 +384,7 @@ function App() {
         <div className="pl3 inline-flex items-center">
           <button 
             type="button" 
+            title="Import/Export"
             /* TODO: set tab-index of menu items to be after other elements when modals are being shown */
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
@@ -393,6 +394,7 @@ function App() {
         
         <div className="pl2 inline-flex items-center">
           <button 
+            title="About"
             type="button" 
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
@@ -402,6 +404,7 @@ function App() {
 
         <div className="pl2 inline-flex items-center">
           <button 
+            title="Theme"
             type="button" 
             /*disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}*/
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
@@ -435,23 +438,27 @@ function App() {
           <section className="pt2 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
+                title="add a task to your list"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
-              <div className="ma1 dib"><button type="button" 
+              <div className="ma1 dib"><button type="button"
+                title="delete all tasks from your list" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
             <div className="dib">
-              <div className="ma1 dib"><button type="button" 
+              <div className="ma1 dib"><button type="button"
+                title="start a list prioritizing session" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
+                title="mark the next actionable item as complete"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleTakeActionUI}>Take Action</button></div>
@@ -480,12 +487,17 @@ function App() {
             <section className="measure-narrow ml-auto mr-auto">
               <p className="lh-135">{genCurrentQuestion(tasks, cursor)}</p>
               <div className="tc">
+                <button 
+                  title="quit the prioritization session"
+                  className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                  onClick={handleQuitUI}>Quit</button>
                 <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                        onClick={handleQuitUI}>Quit</button>
-                <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                        onClick={handleNoUI}>No</button>
-                <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                        onClick={handleYesUI}>Yes</button>
+                  title="answer no to the question"
+                  onClick={handleNoUI}>No</button>
+                <button
+                  title="answer yes to the question"
+                  className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                  onClick={handleYesUI}>Yes</button>
               </div>
             </section>
           </section>}
@@ -497,9 +509,11 @@ function App() {
               <p className="lh-135">{confirmListDelete}</p>
               <div className="tc">
                 <button className={`br3 w4 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                        onClick={handleToggleDeleteModal}>No</button>
+                  title="cancel the delete list action"
+                  onClick={handleToggleDeleteModal}>No</button>
                 <button className={`br3 w4 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
-                        onClick={handleDeleteUI}>Yes</button>
+                  title="confirm the delete list action"
+                  onClick={handleDeleteUI}>Yes</button>
               </div>
             </section>
           </section>}
@@ -513,6 +527,7 @@ function App() {
               
               <div className="tc">
                 <label 
+                  title="Upload a JSON file to import tasks"
                   tabIndex="0" 
                   onKeyDown={handleLabelKeyPress}
                   htmlFor="file-upload" 
@@ -521,7 +536,9 @@ function App() {
                 <input id="file-upload" className="dn input-reset"
                     type="file" accept=".json" onChange={handleImportTasks} />
                 </label>
-                <button className={`br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                <button
+                  title="Export your list to a JSON file"
+                  className={`br3 w4 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
                   onClick={handleExportTasks}>Export</button>
               </div>
 
@@ -573,10 +590,12 @@ function App() {
             </section>
             <div className="pb3 tc">
                 <button 
+                  title="keep the list from the link"
                 className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
                   1. Keep <em>link</em> list</button>
               <button
+                title="keep the list from local storage"
                 className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`} 
                 onClick={() => handleListConflictChoice(initialTasks)}>
                   2. Keep <em>local</em> list</button>
