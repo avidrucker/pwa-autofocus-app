@@ -379,7 +379,7 @@ function App() {
   return (
     <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
       <header className="app-header pa3 pb2 flex justify-center items-center">
-        <h1 className={`ma0 f2 fw8 tracked-custom dib ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}>{appName}</h1>
+        <h1 className={`ma0 f2 fw8 tracked-custom dib ${theme === 'light' ? 'moon-gray' : 'gray'}`}>{appName}</h1>
         
         <div className="pl3 inline-flex items-center">
           <button 
@@ -387,7 +387,7 @@ function App() {
             title="Import/Export"
             /* TODO: set tab-index of menu items to be after other elements when modals are being shown */
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
-            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'gray'}`}
             onClick={handleToggleSaveModal}>
               {saveDisk}</button>
         </div>
@@ -397,7 +397,7 @@ function App() {
             title="About"
             type="button" 
             disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
-            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'gray'}`}
             onClick={handleToggleInfoModal}>
               {infoCircle}</button>
         </div>
@@ -407,7 +407,7 @@ function App() {
             title="Theme"
             type="button" 
             /*disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}*/
-            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'mid-gray'}`}
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'moon-gray' : 'gray'}`}
             onClick={handleToggleTheme}>
               {theme === 'light' ? lightbulbSolid : lightbulbRegular}</button>
         </div>
