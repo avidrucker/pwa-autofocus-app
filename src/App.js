@@ -4,7 +4,7 @@ import { addTask, addAll, completeBenchmarkTask, benchmarkItem,
 import { startReview, handleReviewDecision, isPrioritizableList, 
   genCurrentQuestion, getInitialCursor } from './core/reviewManager';
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
-import { exportTasksToJSON, importTasksFromJSON } from './core/tasksIO';
+import { exportTasksToJSON, importTasksFromJSON, importTasksFromString } from './core/tasksIO';
 import { objectArraysAreEqual } from './core/logicUtils';
 import TodoItem from './TodoItem';
 import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
@@ -267,11 +267,7 @@ function App() {
   // Function to handle importing tasks from raw text
   const handleTextImport = () => {
     if (textAreaValue.trim()) {
-      const lines = textAreaValue.split("\n");
-      let updatedTasks = tasks;
-      for(let i = 0; i < lines.length; i++) {
-        updatedTasks = addTask(updatedTasks, lines[i]);
-      }
+      let updatedTasks = importTasksFromString(tasks, textAreaValue);
       handleListChange(updatedTasks);
       setTextAreaValue('');
     } else {
