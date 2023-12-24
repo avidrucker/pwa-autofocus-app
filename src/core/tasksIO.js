@@ -1,3 +1,5 @@
+import { addTask } from './tasksManager';
+
 // convert tasks list to JSON string
 export const exportTasksToJSON = (tasks) => {
     try {
@@ -42,3 +44,14 @@ export const importTasksFromJSON = (jsonString) => {
         return null;
     }
 };
+
+export function importTasksFromString(oldTasks, importString) {
+    let lines = importString.split("\n");
+    // filter out lines that are empty or whitespace only
+    lines = lines.filter(line => line.trim() !== "");
+    let updatedTasks = oldTasks;
+    for(let i = 0; i < lines.length; i++) {
+        updatedTasks = addTask(updatedTasks, lines[i]);
+    }
+    return updatedTasks;
+}
