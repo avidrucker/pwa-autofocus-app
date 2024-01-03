@@ -158,6 +158,26 @@ function App() {
     }
   }, [showingDeleteModal, tasks.length]);
 
+  // TODO: implement 'y', 'n', and 'q' keypresses for prioritization review
+  // here we will add a keypress listener to the window that is added and
+  // removed based on whether isPrioritizing is true or false
+  // we will use this to handle the 'y', 'n', and 'q' keypresses
+  // useEffect(() => {
+  //   if (isPrioritizing) {
+  //     // the correct syntax should look like
+  //     // window.addEventListener('keypress', handleKehandleYNQkeyPressyPress);
+  //     // q: can I pass multiple functions as an array of functions?
+  //     window.addEventListener('keypress', handleYNQkeyPress);
+  //   } else {
+  //     window.removeEventListener('keypress', handleYNQkeyPress);
+  //   }
+  //   return () => {
+  //     // cleanup function
+  //     window.removeEventListener('keypress', handleYNQkeyPress);
+  //   }
+  //   // eslint-disable-next-line
+  // }, [isPrioritizing]);
+
   const handlePrioritizeUI = () => {
     const result = startReview(tasks);
     if (result.error) {
@@ -224,6 +244,19 @@ function App() {
     setCursor(result.cursor);
     setIsPrioritizing(false);
   }
+
+  // const handleYNQkeyPress = (event) => {
+  //   if (event.key === 'y') {
+  //     console.log("y key pressed");
+  //     handleYesUI();
+  //   } else if (event.key === 'n') {
+  //     console.log("n key pressed");
+  //     handleNoUI();
+  //   } else if (event.key === 'q') {
+  //     console.log("q key pressed");
+  //     handleQuitUI();
+  //   }
+  // }
 
   const handleToggleDeleteModal = () => {
     if(tasks.length === 0) {
