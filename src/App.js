@@ -468,11 +468,11 @@ function App() {
         </section>
 
         <div className="ph3 pt2 pb3">
-          <p className="ma0 o-50 measure-narrow ml-auto mr-auto lh-135">
+          <p className="ma0 o-70 measure-narrow ml-auto mr-auto lh-135">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
           </p>
 
-          <p className="ma0 o-50 measure-narrow ml-auto mr-auto lh-135 line-clamp-3 overflow-hidden">
+          <p className="ma0 o-70 measure-narrow ml-auto mr-auto lh-135 line-clamp-3 overflow-hidden">
             {(benchmarkItem(tasks) !== null) && `The next actionable item is '${benchmarkItem(tasks).text}'.`}
           </p>
         </div>
