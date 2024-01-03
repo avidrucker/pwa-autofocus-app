@@ -396,6 +396,7 @@ function App() {
   // lists at once, such as when evaluating conflicting
   // lists in localStorage and query params.
   // Note: the lists rendered in the conflict modal are not interactive
+  // Further note: Lists of length 100 or greater may cause issues
   const renderList = (inputList, idOffset, interactive) => <div className="ph3">
     <ul className="ph0 todo-list list ma0 tl measure-narrow ml-auto mr-auto">
     {interactive ?
@@ -459,11 +460,11 @@ function App() {
           <button 
             title="Toggle Theme"
             type="button" 
-            /*disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}*/
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'gray' : 'gray'}`}
             onClick={handleToggleTheme}>
               {theme === 'light' ? lightbulbSolid : lightbulbRegular}</button>
         </div>
+
       </header>
 
       <section className="app-container relative flex flex-column h-100">
@@ -519,7 +520,7 @@ function App() {
           </section>
         </form>
         
-        <section className="">
+        <section className="task-list">
           {/* Note: the true on the next line turns ON cancel/clone buttons */}
           {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
         </section>
@@ -666,7 +667,7 @@ function App() {
               <p className="pb3 ma0 lh-135">{clickQuestionCircleToClose}</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleHelpModal} type="button">Close Help Modal</button>
-          </section>}
+            </section>}
 
           {/*local storage and query params conflict resolution modal*/}
           {showingConflictModal && <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
