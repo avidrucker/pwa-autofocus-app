@@ -400,7 +400,7 @@ function App() {
 
         <div className="pl2 inline-flex items-center">
           <button 
-            title="Theme"
+            title="Toggle Theme"
             type="button" 
             /*disabled={isPrioritizing || showingDeleteModal || showingConflictModal || showingSaveModal || showingMoreInfo}*/
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'gray' : 'gray'}`}
@@ -419,7 +419,7 @@ function App() {
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
                 className={`todo-input pa2 w-100 input-reset br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}`} 
                 type="text" 
-                placeholder="Add a task..." 
+                placeholder="Type new task here" 
                 value={inputValue}
                 onChange={(e) => {
                   setInputValue(e.target.value);
@@ -457,7 +457,7 @@ function App() {
                 title="mark the next actionable item as complete"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
-                onClick={handleTakeActionUI}>Take Action</button></div>
+                onClick={handleTakeActionUI}>Mark Done</button></div>
             </div>
           </section>
         </form>
