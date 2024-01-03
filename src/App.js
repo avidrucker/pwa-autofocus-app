@@ -346,8 +346,8 @@ function App() {
     }
   };
 
-  // TODO: rename function to better describe intent
-  const handleLabelKeyPress = (event) => {
+  // Function to handle importing tasks from a JSON file
+  const handleLabelKeyPressForJSONimport = (event) => {
     if (event.key === 'Enter' || event.key === ' ') {
       // Prevent the default action to avoid scrolling on Space press
       event.preventDefault();
@@ -584,7 +584,7 @@ function App() {
                 <label 
                   title="Upload a JSON file to import tasks"
                   tabIndex="0" 
-                  onKeyDown={handleLabelKeyPress}
+                  onKeyDown={handleLabelKeyPressForJSONimport}
                   htmlFor="file-upload" 
                   className={`br3 grow dib button-reset border-box w4 f5 fw6 ba bw1 b--gray ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}>
                 <span>Import</span>
