@@ -543,6 +543,8 @@ function App() {
           <section className={`absolute f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
+              <h2 className="pb2 ph3 ma0">Import/Export</h2>
+
               <p className="ph3 ma0 lh-135">{saveInfo1}</p>
               
               <div className="tc">
@@ -589,6 +591,8 @@ function App() {
           {showingMoreInfo &&
           <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
+
+              <h2 className="pb2 ma0">About AutoFocus</h2>
 
               <p className="pb3 ma0 lh-135">{infoString1}</p>
 
