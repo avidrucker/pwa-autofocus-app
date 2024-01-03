@@ -7,7 +7,7 @@ import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdap
 import { exportTasksToJSON, importTasksFromJSON, importTasksFromString } from './core/tasksIO';
 import { objectArraysAreEqual } from './core/logicUtils';
 import TodoItem from './TodoItem';
-import {saveDisk, infoCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
+import {saveDisk, infoCircle, questionCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
@@ -31,11 +31,15 @@ const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
 const mismatchDetectedMsg1 = "The link list and local storage list do not match. Which will you keep?";
 const confirmListDelete = "Are you sure you want to delete your list? This action cannot be undone.";
 const clickDiskToClose = "Click on the 'disk' icon above to close this window.";
+const instructions = "Add new items to your list by typing into the input box and clicking 'Add Task'. To prioritize your list, click 'Prioritize List'. To mark the next actionable item as complete, click 'Mark Done'. To delete all items from your list, click 'Delete List'.";
+const instructions2 = "Click the 'disk' icon to see options for list import/export. Click the 'i' icon to learn more about AutoFocus. Click the 'lightbulb' icon to toggle light/dark mode. Click the 'question mark' icon for instructions on how to use this app.";
+const clickQuestionCircleToClose = "Click on the 'question mark' icon above to close this window.";
 const clickIcircleToClose = "Click on the 'i' icon above to close this window.";
 const invalidQueryParamsErrMsg1 = "Invalid list query parameters detected. Reverting to local storage list data.";
 const nothingToDeleteErrMsg1 = "There is nothing to delete.";
 const rebuildingQueryParamsConsoleMsg1 = "rebuilding query params from local storage";
 const exportFailErrMsg1 = "Failed to export tasks.";
+const howToReportIssues = "To report any issues/bugs, please leave a ticket on the GitHub repo 'Issues' page here: ";
 
 function App() {
   const initialTasks = getFromLocalStorage('tasks', []);
@@ -55,6 +59,7 @@ function App() {
   const [textAreaValue, setTextAreaValue] = useState('');
   const initialTheme = getFromLocalStorage('theme', 'dark');
   const [theme, setTheme] = useState(initialTheme);
+  const [showingHelpModal, setShowingHelpModal] = useState(false);
 
 
   // sets focus to new item text input on initial load
@@ -231,12 +236,21 @@ function App() {
   const handleToggleInfoModal = () => {
     setShowingMoreInfo(!showingMoreInfo);
     setShowingSaveModal(false);
+    setShowingHelpModal(false);
+    setErrMsg("");
+  }
+
+  const handleToggleHelpModal = () => {
+    setShowingHelpModal(!showingHelpModal);
+    setShowingSaveModal(false);
+    setShowingMoreInfo(false);
     setErrMsg("");
   }
 
   const handleToggleSaveModal = () => {
     setShowingSaveModal(!showingSaveModal);
     setShowingMoreInfo(false);
+    setShowingHelpModal(false);
     setImportErrMsg("");
     setErrMsg("");
   }
@@ -396,6 +410,16 @@ function App() {
             className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'gray' : 'gray'}`}
             onClick={handleToggleInfoModal}>
               {infoCircle}</button>
+        </div>
+
+        <div className="pl2 inline-flex items-center">
+          <button 
+            title="Help"
+            type="button" 
+            disabled={isPrioritizing || showingDeleteModal || showingConflictModal }
+            className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'gray' : 'gray'}`}
+            onClick={handleToggleHelpModal}>
+              {questionCircle}</button>
         </div>
 
         <div className="pl2 inline-flex items-center">
@@ -573,6 +597,35 @@ function App() {
               <p className="pb3 ma0 lh-135">{clickIcircleToClose}</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
+          </section>}
+
+          {/*help modal*/}
+          {showingHelpModal && 
+            <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
+              <h2 className="pb2 ma0">Instructions & Help</h2>
+              <p className="pb2 ma0 lh-135">{instructions}</p>
+              <p className="pb2 ma0 lh-135">{instructions2}</p>
+
+              {/*TODO: implement keyboard shortcuts for prioritization review*/}
+              {/*<p className="fw6 pb2 ma0 lh-135">Keyboard shortcuts:</p>
+              <ul className="ma0 pl3">
+                <li className="pb1">Add Task: <span className="fw6">Enter</span></li>
+                <li className="pb1">Prioritize List: <span className="fw6">p</span></li>
+                <li className="pb1">Mark Done: <span className="fw6">d</span></li>
+                <li className="pb1">Delete List: <span className="fw6">x</span></li>
+                <li className="pb1">Quit Prioritization: <span className="fw6">q</span></li>
+                <li className="pb1">Answer No: <span className="fw6">n</span></li>
+                <li className="pb1">Answer Yes: <span className="fw6">y</span></li>
+              </ul>*/}
+
+              <p className="pb3 ma0 lh-135">
+                <span>{howToReportIssues}</span><a className="link underline blue hover-orange" target="_blank" href="https://github.com/avidrucker/pwa-autofocus-app/issues" rel="noreferrer">AutoFocus Issues</a>
+              </p>
+
+              <p className="pb3 ma0 lh-135">{clickQuestionCircleToClose}</p>
+            </section>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleHelpModal} type="button">Close Help Modal</button>
           </section>}
 
           {/*local storage and query params conflict resolution modal*/}
