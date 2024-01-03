@@ -543,13 +543,16 @@ function App() {
                 <button 
                   title="quit the prioritization session"
                   className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                  tabIndex={0}
                   onClick={handleQuitUI}>Quit</button>
                 <button className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
                   title="answer no to the question"
+                  tabIndex={1}
                   onClick={handleNoUI}>No</button>
                 <button
                   title="answer yes to the question"
                   className={`br3 w3 fw6 grow ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`}
+                  tabIndex={2}
                   onClick={handleYesUI}>Yes</button>
               </div>
             </section>
