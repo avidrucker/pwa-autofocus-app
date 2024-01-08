@@ -31,7 +31,7 @@ const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
 const mismatchDetectedMsg1 = "The link list and local storage list do not match. Which will you keep?";
 const confirmListDelete = "Are you sure you want to delete your list? This action cannot be undone.";
 const clickDiskToClose = "Click on the 'disk' icon above to close this window.";
-const instructions = "Add new items to your list by typing into the input box and clicking 'Add Task'. To prioritize your list, click 'Prioritize List'. To mark the next actionable item as complete, click 'Mark Done'. To delete all items from your list, click 'Delete List'.";
+const instructions = "Add new items to your list by typing into the input box and clicking 'Add Item'. To prioritize your list, click 'Prioritize'. To mark the next actionable item as complete, click 'Mark Done'. To delete all items from your list, click 'Delete List'.";
 const instructions2 = "Click the 'disk' icon to see options for list import/export. Click the 'i' icon to learn more about AutoFocus. Click the 'lightbulb' icon to toggle light/dark mode. Click the 'question mark' icon for instructions on how to use this app.";
 const clickQuestionCircleToClose = "Click on the 'question mark' icon above to close this window.";
 const clickIcircleToClose = "Click on the 'i' icon above to close this window.";
@@ -492,10 +492,10 @@ function App() {
           <section className="pt2 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
-                title="add a task to your list"
+                title="add a new item to your list"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
-                onClick={handleAddTaskUI}>Add Task</button></div>
+                onClick={handleAddTaskUI}>Add Item</button></div>
               
               <div className="ma1 dib"><button type="button"
                 title="delete all tasks from your list" 
@@ -509,7 +509,7 @@ function App() {
                 title="start a list prioritizing session" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
-                onClick={handlePrioritizeUI}>Prioritize List</button></div>
+                onClick={handlePrioritizeUI}>Prioritize</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 title="mark the next actionable item as complete"
@@ -651,7 +651,7 @@ function App() {
               {/*TODO: implement keyboard shortcuts for prioritization review*/}
               {/*<p className="fw6 pb2 ma0 lh-135">Keyboard shortcuts:</p>
               <ul className="ma0 pl3">
-                <li className="pb1">Add Task: <span className="fw6">Enter</span></li>
+                <li className="pb1">Add Item: <span className="fw6">Enter</span></li>
                 <li className="pb1">Prioritize List: <span className="fw6">p</span></li>
                 <li className="pb1">Mark Done: <span className="fw6">d</span></li>
                 <li className="pb1">Delete List: <span className="fw6">x</span></li>
