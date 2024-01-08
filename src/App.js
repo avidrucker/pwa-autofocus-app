@@ -493,13 +493,13 @@ function App() {
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 title="add a task to your list"
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleAddTaskUI}>Add Task</button></div>
               
               <div className="ma1 dib"><button type="button"
                 title="delete all tasks from your list" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
@@ -507,13 +507,13 @@ function App() {
             <div className="dib">
               <div className="ma1 dib"><button type="button"
                 title="start a list prioritizing session" 
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handlePrioritizeUI}>Prioritize List</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 title="mark the next actionable item as complete"
-                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
+                className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
                 disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
                 onClick={handleTakeActionUI}>Mark Done</button></div>
             </div>
