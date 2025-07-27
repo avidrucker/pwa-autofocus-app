@@ -6,6 +6,7 @@ import { startReview, handleReviewDecision, isPrioritizableList,
 import { getFromLocalStorage, saveToLocalStorage } from './core/localStorageAdapter';
 import { exportTasksToJSON, importTasksFromJSON, importTasksFromString } from './core/tasksIO';
 import { objectArraysAreEqual } from './core/logicUtils';
+import { PWADebugger } from './core/pwaDebugger';
 import TodoItem from './TodoItem';
 import {saveDisk, infoCircle, questionCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
 import './App.css';

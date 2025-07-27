@@ -1,7 +1,16 @@
 {
   "short_name": "AutoFocus",
   "name": "AutoFocus Task Management App",
-  "id": "/pwa-autofocus-app/",
+  "id": "/?standalone=true",
+  "scope": "/",
+  "start_url": "/?source=pwa",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "description": "Stay focused and productive with AutoFocus.",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "favicon.ico",
@@ -78,10 +87,5 @@
         "form_factor": "wide",
         "label":"AutoFocus"
     }
-    ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff",
-  "description": "Stay focused and productive with AutoFocus."
+    ]
 }
