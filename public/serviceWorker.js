@@ -1,18 +1,19 @@
 // This is the "service worker" which can intercept network requests.
-const CACHE_NAME = 'autofocus-cache-v2';
-const RUNTIME_CACHE = 'autofocus-runtime-v2';
+const CACHE_NAME = 'autofocus-cache-v3';
+const RUNTIME_CACHE = 'autofocus-runtime-v3';
 
-// Critical resources that must be cached for offline functionality
-const PRECACHE_URLS = [
+// Core resources that must be cached for offline functionality
+const CORE_CACHE_URLS = [
     '/',
     '/index.html',
     '/manifest.json',
     '/favicon.ico',
     '/logo192.png',
-    '/logo512.png',
-    '/static/js/bundle.js',
-    '/static/css/main.css',
-    // Add fallback for external dependencies
+    '/logo512.png'
+];
+
+// External dependencies to cache
+const EXTERNAL_CACHE_URLS = [
     'https://unpkg.com/tachyons@4.12.0/css/tachyons.min.css',
     'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap'
 ];
@@ -24,12 +25,38 @@ self.addEventListener('install', event => {
     event.waitUntil(
       (async () => {
         const cache = await caches.open(CACHE_NAME);
-        console.log('[ServiceWorker] Caching app shell and content');
+        console.log('[ServiceWorker] Caching core resources');
         
-        // Cache core resources first
         try {
-          await cache.addAll(PRECACHE_URLS);
-          console.log('[ServiceWorker] All resources cached successfully');
+          // Cache core resources first
+          await cache.addAll(CORE_CACHE_URLS);
+          console.log('[ServiceWorker] Core resources cached');
+          
+          // Cache external dependencies
+          await cache.addAll(EXTERNAL_CACHE_URLS);
+          console.log('[ServiceWorker] External resources cached');
+          
+          // Discover and cache built JS/CSS files
+          const indexResponse = await fetch('/');
+          const indexText = await indexResponse.text();
+          
+          // Extract JS and CSS file paths from the HTML
+          const jsRegex = /\/static\/js\/[^"]+\.js/g;
+          const cssRegex = /\/static\/css\/[^"]+\.css/g;
+          
+          const jsFiles = indexText.match(jsRegex) || [];
+          const cssFiles = indexText.match(cssRegex) || [];
+          
+          console.log('[ServiceWorker] Found JS files:', jsFiles);
+          console.log('[ServiceWorker] Found CSS files:', cssFiles);
+          
+          // Cache discovered assets
+          const assetUrls = [...jsFiles, ...cssFiles];
+          if (assetUrls.length > 0) {
+            await cache.addAll(assetUrls);
+            console.log('[ServiceWorker] Asset files cached');
+          }
+          
         } catch (error) {
           console.error('[ServiceWorker] Failed to cache some resources:', error);
           // Continue with installation even if some resources fail
@@ -73,6 +100,7 @@ self.addEventListener('activate', event => {
 // eslint-disable-next-line no-restricted-globals
 self.addEventListener('fetch', event => {
     // Skip cross-origin requests and non-GET requests
+    // eslint-disable-next-line no-restricted-globals
     if (!event.request.url.startsWith(self.location.origin) && 
         !event.request.url.includes('fonts.googleapis.com') &&
         !event.request.url.includes('unpkg.com')) {

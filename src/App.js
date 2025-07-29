@@ -8,7 +8,7 @@ import { exportTasksToJSON, importTasksFromJSON, importTasksFromString } from '.
 import { objectArraysAreEqual } from './core/logicUtils';
 import { PWADebugger } from './core/pwaDebugger';
 import TodoItem from './TodoItem';
-import {saveDisk, infoCircle, questionCircle, lightbulbSolid, lightbulbRegular } from './core/icons'
+import {saveDisk, infoCircle, questionCircle, lightbulbSolid, lightbulbRegular, wrench } from './core/icons'
 import './App.css';
 
 // TODO: refactor all buttons to change color on hover, focus, active rather than grow
@@ -61,6 +61,10 @@ function App() {
   const initialTheme = getFromLocalStorage('theme', 'dark');
   const [theme, setTheme] = useState(initialTheme);
   const [showingHelpModal, setShowingHelpModal] = useState(false);
+  const [pwaDebugInfo, setPwaDebugInfo] = useState(null);
+  const [showingDebugModal, setShowingDebugModal] = useState(false);
+  const initialDebugMode = getFromLocalStorage('debugMode', false);
+  const [debugMode, setDebugMode] = useState(initialDebugMode);
 
 
   // sets focus to new item text input on initial load
@@ -84,6 +88,16 @@ function App() {
       document.body.classList.remove('bg-white');
     }
   }, [theme]);
+
+  // Auto-run PWA debugger on app load for development
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'development' && debugMode) {
+      // Run debugger after a short delay to let everything initialize
+      setTimeout(() => {
+        handleRunDebugger();
+      }, 2000);
+    }
+  }, [debugMode]);
 
   // useEffect that loads list state on page load, attempts to get a list from
   // the URL and local storage, checks for any errors or potential conflicts
@@ -294,6 +308,29 @@ function App() {
     saveToLocalStorage('theme', theme === 'light' ? 'dark' : 'light');
   }
 
+  const handleToggleDebugModal = () => {
+    setShowingDebugModal(!showingDebugModal);
+    setImportErrMsg("");
+    setErrMsg("");
+  }
+
+  const handleRunDebugger = async () => {
+    try {
+      const debugInfo = await PWADebugger.getFullStatus();
+      setPwaDebugInfo(debugInfo);
+      console.log('🔧 PWA Debug Info:', debugInfo);
+    } catch (error) {
+      console.error('Failed to get debug info:', error);
+      setPwaDebugInfo({ error: error.message });
+    }
+  }
+
+  const handleToggleDebugMode = () => {
+    const newDebugMode = !debugMode;
+    setDebugMode(newDebugMode);
+    saveToLocalStorage('debugMode', newDebugMode);
+  }
+
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
     setImportErrMsg("");
@@ -466,6 +503,17 @@ function App() {
               {theme === 'light' ? lightbulbSolid : lightbulbRegular}</button>
         </div>
 
+        {debugMode && (
+          <div className="pl2 inline-flex items-center">
+            <button 
+              title="PWA Debug Info"
+              type="button" 
+              className={`button-reset pa1 w2 h2 pointer f5 fw6 grow bg-transparent bn ${theme === 'light' ? 'gray' : 'gray'}`}
+              onClick={handleToggleDebugModal}>
+                {wrench}</button>
+          </div>
+        )}
+
       </header>
 
       <section className="app-container relative flex flex-column h-100">
@@ -475,7 +523,7 @@ function App() {
               <input 
                 ref={inputRef}
                 id="todo-input"
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal}
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal || showingDebugModal}
                 className={`todo-input pa2 w-100 input-reset br3 ba bw1 b--gray ${theme === 'light' ? 'black hover-bg-light-gray active-bg-white' : 'white bg-black hover-bg-dark-gray active-bg-black'}`} 
                 type="text" 
                 placeholder="Type new task here" 
@@ -495,13 +543,13 @@ function App() {
               <div className="ma1 dib"><button type="submit" 
                 title="add a new item to your list"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizing ? 'o-50' : 'pointer grow'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal || showingDebugModal} 
                 onClick={handleAddTaskUI}>Add Item</button></div>
               
               <div className="ma1 dib"><button type="button"
                 title="delete all tasks from your list" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${tasks.length !== 0 ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal || showingDebugModal} 
                 onClick={handleToggleDeleteModal}>Delete List</button></div>
             </div>
 
@@ -509,13 +557,13 @@ function App() {
               <div className="ma1 dib"><button type="button"
                 title="start a list prioritizing session" 
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isPrioritizableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal || showingDebugModal} 
                 onClick={handlePrioritizeUI}>Prioritize</button></div>
               
               <div className="ma1 dib"><button type="button" 
                 title="mark the next actionable item as complete"
                 className={`br3 w4 fw6 ba bw1 b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 ph1 ${isActionableList(tasks) ? 'pointer grow' : 'o-50'}`} 
-                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal} 
+                disabled={isPrioritizing || showingDeleteModal || showingMoreInfo || showingConflictModal || showingSaveModal || showingDebugModal} 
                 onClick={handleTakeActionUI}>Mark Done</button></div>
             </div>
           </section>
@@ -636,6 +684,21 @@ function App() {
 
               <p className="pb3 ma0 lh-135">{infoString2}</p>
 
+              <div className="pb3">
+                <h3 className="f5 fw6 ma0 mb2">Debug Mode</h3>
+                <div className="flex items-center">
+                  <button
+                    title={debugMode ? "Disable debug mode" : "Enable debug mode"}
+                    className={`br3 f6 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer mr2`}
+                    onClick={handleToggleDebugMode}>
+                    {debugMode ? 'Disable' : 'Enable'} Debug Mode
+                  </button>
+                  <span className="f6 o-70">
+                    {debugMode ? 'Debug tools are visible' : 'Debug tools are hidden'}
+                  </span>
+                </div>
+              </div>
+
               <p className="pb3 ma0 lh-135">{clickIcircleToClose}</p>
             </section>
             <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleInfoModal} type="button">Close Info Modal</button>
@@ -692,6 +755,59 @@ function App() {
                   2. Keep <em>local</em> list</button>
               </div>
             </section>}
+
+          {/*PWA Debug Modal*/}
+          {showingDebugModal && <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="measure-narrow ml-auto mr-auto tl">
+              <div className="flex justify-between items-center">
+                <h2 className="ma0 f4 fw6">PWA Debug Information</h2>
+                <button 
+                  title="Run PWA Debugger"
+                  className={`br3 f6 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer`}
+                  onClick={handleRunDebugger}>
+                  Refresh Debug Info
+                </button>
+              </div>
+              <div className="mt3">
+                {pwaDebugInfo ? (
+                  <div className="f6 lh-copy">
+                    <h3 className="f5 fw6 mt3 mb2">Service Worker Status:</h3>
+                    <pre className={`pa2 br2 overflow-auto ${theme === 'light' ? 'bg-light-gray' : 'bg-near-black'}`}>
+                      {JSON.stringify(pwaDebugInfo.serviceWorker, null, 2)}
+                    </pre>
+                    
+                    <h3 className="f5 fw6 mt3 mb2">Cache Status:</h3>
+                    <pre className={`pa2 br2 overflow-auto ${theme === 'light' ? 'bg-light-gray' : 'bg-near-black'}`}>
+                      {JSON.stringify(pwaDebugInfo.cache, null, 2)}
+                    </pre>
+                    
+                    <h3 className="f5 fw6 mt3 mb2">Offline Status:</h3>
+                    <pre className={`pa2 br2 overflow-auto ${theme === 'light' ? 'bg-light-gray' : 'bg-near-black'}`}>
+                      {JSON.stringify(pwaDebugInfo.offline, null, 2)}
+                    </pre>
+                    
+                    <h3 className="f5 fw6 mt3 mb2">General Info:</h3>
+                    <pre className={`pa2 br2 overflow-auto ${theme === 'light' ? 'bg-light-gray' : 'bg-near-black'}`}>
+                      {JSON.stringify({
+                        standalone: pwaDebugInfo.standalone,
+                        userAgent: pwaDebugInfo.userAgent,
+                        timestamp: pwaDebugInfo.timestamp
+                      }, null, 2)}
+                    </pre>
+                  </div>
+                ) : (
+                  <p className="i">Click "Refresh Debug Info" to run diagnostics</p>
+                )}
+              </div>
+              <div className="tc mt3">
+                <button
+                  className={`br3 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer`}
+                  onClick={handleToggleDebugModal}>
+                  Close Debug Info
+                </button>
+              </div>
+            </section>
+          </section>}
 
       </section>
     </main>
