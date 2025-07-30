@@ -1,6 +1,15 @@
 // This is the "service worker" which can intercept network requests.
-const CACHE_NAME = 'autofocus-cache-v4';
-const RUNTIME_CACHE = 'autofocus-runtime-v4';
+// Version-based caching strategy for proper app updates
+const APP_VERSION = '0.1.1'; // Update this to match package.json version
+const CACHE_NAME = `autofocus-cache-v${APP_VERSION}`;
+const RUNTIME_CACHE = `autofocus-runtime-v${APP_VERSION}`;
+
+// Cache strategies
+const CACHE_STRATEGIES = {
+  NETWORK_FIRST: 'network-first',
+  CACHE_FIRST: 'cache-first',
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+};
 
 // Get the base URL for the current environment
 // eslint-disable-next-line no-restricted-globals
