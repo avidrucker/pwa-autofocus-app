@@ -1,6 +1,15 @@
 // This is the "service worker" which can intercept network requests.
-const CACHE_NAME = 'autofocus-cache-v4';
-const RUNTIME_CACHE = 'autofocus-runtime-v4';
+// Version-based caching strategy for proper app updates
+const APP_VERSION = '0.1.2'; // Update this to match package.json version
+const CACHE_NAME = `autofocus-cache-v${APP_VERSION}`;
+const RUNTIME_CACHE = `autofocus-runtime-v${APP_VERSION}`;
+
+// Cache strategies
+const CACHE_STRATEGIES = {
+  NETWORK_FIRST: 'network-first',
+  CACHE_FIRST: 'cache-first',
+  STALE_WHILE_REVALIDATE: 'stale-while-revalidate'
+};
 
 // Get the base URL for the current environment
 // eslint-disable-next-line no-restricted-globals
@@ -147,55 +156,87 @@ self.addEventListener('fetch', event => {
         return;
     }
     
+    // Determine caching strategy based on request type
+    const isAppShell = event.request.url.includes('/static/') || 
+                      event.request.url.endsWith('.html') ||
+                      event.request.mode === 'navigate';
+    
     event.respondWith(
         (async () => {
             try {
-                // Check cache first (Cache First strategy for better offline support)
-                const cachedResponse = await caches.match(event.request);
-                
-                if (cachedResponse) {
-                    console.log('[ServiceWorker] Found in cache:', event.request.url);
-                    return cachedResponse;
+                if (isAppShell) {
+                    // Network First strategy for app shell (HTML, JS, CSS)
+                    console.log('[ServiceWorker] Using Network First for:', event.request.url);
+                    
+                    try {
+                        const networkResponse = await fetch(event.request);
+                        
+                        // Cache successful responses
+                        if (networkResponse.status === 200) {
+                            const cache = await caches.open(CACHE_NAME);
+                            cache.put(event.request, networkResponse.clone());
+                            console.log('[ServiceWorker] Updated cache from network:', event.request.url);
+                        }
+                        
+                        return networkResponse;
+                    } catch (networkError) {
+                        console.log('[ServiceWorker] Network failed, trying cache:', event.request.url);
+                        
+                        // Network failed, try cache
+                        const cachedResponse = await caches.match(event.request);
+                        if (cachedResponse) {
+                            return cachedResponse;
+                        }
+                        
+                        // For navigation requests, return cached index.html as fallback
+                        if (event.request.mode === 'navigate') {
+                            const indexFallback = await caches.match(`${BASE_URL}/index.html`) || 
+                                                 await caches.match(`${BASE_URL}/`) ||
+                                                 await caches.match('/index.html') ||
+                                                 await caches.match('/');
+                            
+                            if (indexFallback) {
+                                console.log('[ServiceWorker] Serving cached index.html as fallback');
+                                return indexFallback;
+                            }
+                            
+                            // If no index.html, try offline page
+                            const offlineFallback = await caches.match(`${BASE_URL}/offline.html`) ||
+                                                  await caches.match('/offline.html');
+                            
+                            if (offlineFallback) {
+                                console.log('[ServiceWorker] Serving offline.html as fallback');
+                                return offlineFallback;
+                            }
+                        }
+                        
+                        throw networkError;
+                    }
+                } else {
+                    // Cache First strategy for static assets (fonts, icons, etc.)
+                    console.log('[ServiceWorker] Using Cache First for:', event.request.url);
+                    
+                    const cachedResponse = await caches.match(event.request);
+                    
+                    if (cachedResponse) {
+                        console.log('[ServiceWorker] Found in cache:', event.request.url);
+                        return cachedResponse;
+                    }
+                    
+                    // If not in cache, try network
+                    console.log('[ServiceWorker] Fetching from network:', event.request.url);
+                    const networkResponse = await fetch(event.request);
+                    
+                    // Cache successful responses
+                    if (networkResponse.status === 200) {
+                        const cache = await caches.open(RUNTIME_CACHE);
+                        cache.put(event.request, networkResponse.clone());
+                    }
+                    
+                    return networkResponse;
                 }
-                
-                // If not in cache, try network
-                console.log('[ServiceWorker] Fetching from network:', event.request.url);
-                const networkResponse = await fetch(event.request);
-                
-                // Cache successful responses
-                if (networkResponse.status === 200) {
-                    const cache = await caches.open(RUNTIME_CACHE);
-                    cache.put(event.request, networkResponse.clone());
-                }
-                
-                return networkResponse;
             } catch (error) {
-                console.log('[ServiceWorker] Network fetch failed:', error);
-                
-                // For navigation requests, return cached index.html as fallback
-                if (event.request.mode === 'navigate') {
-                    console.log('[ServiceWorker] Navigation request, trying fallbacks...');
-                    
-                    // Try to get the cached index.html
-                    const indexFallback = await caches.match(`${BASE_URL}/index.html`) || 
-                                         await caches.match(`${BASE_URL}/`) ||
-                                         await caches.match('/index.html') ||
-                                         await caches.match('/');
-                    
-                    if (indexFallback) {
-                        console.log('[ServiceWorker] Serving cached index.html as fallback');
-                        return indexFallback;
-                    }
-                    
-                    // If no index.html, try offline page
-                    const offlineFallback = await caches.match(`${BASE_URL}/offline.html`) ||
-                                          await caches.match('/offline.html');
-                    
-                    if (offlineFallback) {
-                        console.log('[ServiceWorker] Serving offline.html as fallback');
-                        return offlineFallback;
-                    }
-                }
+                console.log('[ServiceWorker] Request failed completely:', error);
                 
                 // For headless Chrome (Lighthouse), provide a simple response
                 if (isHeadlessChrome() && event.request.mode === 'navigate') {
