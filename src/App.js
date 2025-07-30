@@ -99,6 +99,22 @@ function App() {
     }
   }, [debugMode]);
 
+  // Sync URL when app comes back online
+  useEffect(() => {
+    const handleOnline = () => {
+      console.log('App is back online - syncing URL state');
+      try {
+        const queryString = serializeListStateToQueryString(tasks);
+        window.history.replaceState({}, '', queryString);
+      } catch (error) {
+        console.warn('Failed to sync URL state when back online:', error);
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => window.removeEventListener('online', handleOnline);
+  }, [tasks]);
+
   // useEffect that loads list state on page load, attempts to get a list from
   // the URL and local storage, checks for any errors or potential conflicts
   useEffect(() => {
@@ -208,8 +224,13 @@ function App() {
     // Serialize the new state to a query string
     const queryString = serializeListStateToQueryString(newListState);
   
-    // Update the URL without reloading the page
-    window.history.pushState({}, '', queryString);
+    // Update the URL without reloading the page - handle potential errors
+    try {
+      window.history.pushState({}, '', queryString);
+    } catch (error) {
+      console.warn('Failed to update URL state:', error);
+      // Continue anyway as this isn't critical for app functionality
+    }
   
     setTasks(newListState);
     saveToLocalStorage('tasks', newListState);
