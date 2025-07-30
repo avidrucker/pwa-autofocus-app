@@ -1,15 +1,33 @@
 // This is the "service worker" which can intercept network requests.
-const CACHE_NAME = 'autofocus-cache-v3';
-const RUNTIME_CACHE = 'autofocus-runtime-v3';
+const CACHE_NAME = 'autofocus-cache-v4';
+const RUNTIME_CACHE = 'autofocus-runtime-v4';
+
+// Get the base URL for the current environment
+// eslint-disable-next-line no-restricted-globals
+const getBaseUrl = () => {
+  // eslint-disable-next-line no-restricted-globals
+  const origin = self.location.origin;
+  
+  // For GitHub Pages deployment
+  if (origin.includes('github.io')) {
+    return '/pwa-autofocus-app';
+  }
+  
+  // For local development or other deployments
+  return '';
+};
+
+const BASE_URL = getBaseUrl();
 
 // Core resources that must be cached for offline functionality
-const CORE_CACHE_URLS = [
-    '/',
-    '/index.html',
-    '/manifest.json',
-    '/favicon.ico',
-    '/logo192.png',
-    '/logo512.png'
+const getCoreUrls = () => [
+    `${BASE_URL}/`,
+    `${BASE_URL}/index.html`,
+    `${BASE_URL}/manifest.json`,
+    `${BASE_URL}/favicon.ico`,
+    `${BASE_URL}/logo192.png`,
+    `${BASE_URL}/logo512.png`,
+    `${BASE_URL}/offline.html`
 ];
 
 // External dependencies to cache
@@ -28,8 +46,12 @@ self.addEventListener('install', event => {
         console.log('[ServiceWorker] Caching core resources');
         
         try {
+          // Get core URLs for current environment
+          const coreUrls = getCoreUrls();
+          console.log('[ServiceWorker] Core URLs to cache:', coreUrls);
+          
           // Cache core resources first
-          await cache.addAll(CORE_CACHE_URLS);
+          await cache.addAll(coreUrls);
           console.log('[ServiceWorker] Core resources cached');
           
           // Cache external dependencies
@@ -37,12 +59,13 @@ self.addEventListener('install', event => {
           console.log('[ServiceWorker] External resources cached');
           
           // Discover and cache built JS/CSS files
-          const indexResponse = await fetch('/');
+          const indexUrl = `${BASE_URL}/`;
+          const indexResponse = await fetch(indexUrl);
           const indexText = await indexResponse.text();
           
           // Extract JS and CSS file paths from the HTML
-          const jsRegex = /\/static\/js\/[^"]+\.js/g;
-          const cssRegex = /\/static\/css\/[^"]+\.css/g;
+          const jsRegex = new RegExp(`${BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/static/js/[^"]+\\.js`, 'g');
+          const cssRegex = new RegExp(`${BASE_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/static/css/[^"]+\\.css`, 'g');
           
           const jsFiles = indexText.match(jsRegex) || [];
           const cssFiles = indexText.match(cssRegex) || [];
@@ -138,9 +161,26 @@ self.addEventListener('fetch', event => {
                 
                 // For navigation requests, return cached index.html as fallback
                 if (event.request.mode === 'navigate') {
-                    const fallback = await caches.match('/index.html');
-                    if (fallback) {
-                        return fallback;
+                    console.log('[ServiceWorker] Navigation request, trying fallbacks...');
+                    
+                    // Try to get the cached index.html
+                    const indexFallback = await caches.match(`${BASE_URL}/index.html`) || 
+                                         await caches.match(`${BASE_URL}/`) ||
+                                         await caches.match('/index.html') ||
+                                         await caches.match('/');
+                    
+                    if (indexFallback) {
+                        console.log('[ServiceWorker] Serving cached index.html as fallback');
+                        return indexFallback;
+                    }
+                    
+                    // If no index.html, try offline page
+                    const offlineFallback = await caches.match(`${BASE_URL}/offline.html`) ||
+                                          await caches.match('/offline.html');
+                    
+                    if (offlineFallback) {
+                        console.log('[ServiceWorker] Serving offline.html as fallback');
+                        return offlineFallback;
                     }
                 }
                 
