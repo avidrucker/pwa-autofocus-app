@@ -15,7 +15,7 @@ import './App.css';
 // TODO: implement an 'undo' button that undo's the last action taken, use fa-history icon
 // TODO: restrict 'next actionable item' text to 2 lines, end with ellipses if it exceeds that
 
-const semVer = "0.1.1"; // version number for the app, used in the info modal
+const semVer = "0.1.2"; // version number for the app, used in the info modal
 
 const activeListOffset = 0;
 const queryStringListOffset = 100;
