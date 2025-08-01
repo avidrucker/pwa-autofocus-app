@@ -21,6 +21,9 @@ const activeListOffset = 0;
 const queryStringListOffset = 100;
 const initialTasksListOffset = 200;
 
+// URL length limits - using conservative limit for cross-browser compatibility
+const MAX_URL_LENGTH = 8000; // Conservative limit that works across all browsers
+
 const appName = "AutoFocus";
 const infoString2 = "This web app was built by Avi Drucker using ReactJS, Font Awesome, and Tachyons CSS.";
 const infoString1 = "The AutoFocus algorithm was designed by Mark Forster as a pen and paper method to help increase productivity. It does so by limiting list interaction and providing a simple (binary) decision-making framework.";
@@ -28,6 +31,7 @@ const saveInfo1 = "You can import and export JSON lists into and out of AutoFocu
 const saveInfo2 = "You can also import a list by pasting in raw text below, and then clicking the 'Submit' button.";
 const emptyInputErrMsg1 = "New items cannot be empty or only whitespace.";
 const cannotTakeActionErrMsg1 = "There are no actionable tasks in your list.";
+const maxListLengthErrMsg1 = "Maximum list length reached. Please create a new list to continue adding items.";
 const emptyTextAreaErrMsg1 = "New items cannot be empty or whitespace only.";
 const badJSONimportErrMsg1 = "Failed to import tasks. Ensure the JSON file has the correct format.";
 const nonJSONimportAttemptedErrMsg1 = "Please select a valid JSON file.";
@@ -109,7 +113,12 @@ function App() {
         const queryString = serializeListStateToQueryString(tasks);
         window.history.replaceState({}, '', queryString);
       } catch (error) {
-        console.warn('Failed to sync URL state when back online:', error);
+        if (error.message === 'URL_TOO_LONG') {
+          console.warn('List is too long for URL sharing - skipping URL sync');
+          setErrMsg(maxListLengthErrMsg1);
+        } else {
+          console.warn('Failed to sync URL state when back online:', error);
+        }
       }
     };
 
@@ -223,25 +232,41 @@ function App() {
   };
 
   const handleListChange = (newListState) => {
-    // Serialize the new state to a query string
-    const queryString = serializeListStateToQueryString(newListState);
-  
-    // Update the URL without reloading the page - handle potential errors
-    try {
-      window.history.pushState({}, '', queryString);
-    } catch (error) {
-      console.warn('Failed to update URL state:', error);
-      // Continue anyway as this isn't critical for app functionality
-    }
-  
+    // Always save to local storage first (no length limit)
     setTasks(newListState);
     saveToLocalStorage('tasks', newListState);
+    
+    // Try to update URL - handle potential length errors
+    try {
+      const queryString = serializeListStateToQueryString(newListState);
+      window.history.pushState({}, '', queryString);
+      // Clear any previous URL length errors
+      if (errMsg === maxListLengthErrMsg1) {
+        setErrMsg("");
+      }
+    } catch (error) {
+      if (error.message === 'URL_TOO_LONG') {
+        console.warn('List is too long for URL sharing - using local storage only');
+        setErrMsg(maxListLengthErrMsg1);
+        // URL won't be updated, but local storage will still work
+      } else {
+        console.warn('Failed to update URL state:', error);
+        // Continue anyway as this isn't critical for app functionality
+      }
+    }
   };
 
   const handleAddTaskUI = (e) => {
     e.preventDefault();
     if (inputValue.trim()) {
       const updatedTasks = addTask(tasks, inputValue);
+      
+      // Check if the new list would be too long for URL
+      if (isListTooLongForUrl(updatedTasks)) {
+        setErrMsg(maxListLengthErrMsg1);
+        return;
+      }
+      
       handleListChange(updatedTasks);
       setInputValue('');
     } else {
@@ -376,6 +401,13 @@ function App() {
   const handleTextImport = () => {
     if (textAreaValue.trim()) {
       let updatedTasks = importTasksFromString(tasks, textAreaValue);
+      
+      // Check if the new list would be too long for URL
+      if (isListTooLongForUrl(updatedTasks)) {
+        setImportErrMsg(maxListLengthErrMsg1);
+        return;
+      }
+      
       handleListChange(updatedTasks);
       setTextAreaValue('');
     } else {
@@ -396,6 +428,13 @@ function App() {
                 // addAll updates ids for 2nd list to 
                 // prevent id collisions
                 const updatedTasks = addAll(tasks, importedTasks);
+                
+                // Check if the new list would be too long for URL
+                if (isListTooLongForUrl(updatedTasks)) {
+                  setImportErrMsg(maxListLengthErrMsg1);
+                  return;
+                }
+                
                 handleListChange(updatedTasks);
             } else {
                 setImportErrMsg(badJSONimportErrMsg1);
@@ -421,7 +460,25 @@ function App() {
     // TODO: refactor out btoa w/ Buffer.from(str, 'base64') and buf.toString('base64')
     // Serialize listState to a query-friendly string, such as base64
     const serializedState = btoa(encodeURIComponent(JSON.stringify(listState)));
-    return `?list=${serializedState}`;
+    const queryString = `?list=${serializedState}`;
+    
+    // Check if the resulting URL would exceed browser limits
+    const fullUrl = window.location.origin + window.location.pathname + queryString;
+    if (fullUrl.length > MAX_URL_LENGTH) {
+      throw new Error('URL_TOO_LONG');
+    }
+    
+    return queryString;
+  };
+
+  // Helper function to check if a list state would create a URL that's too long
+  const isListTooLongForUrl = (listState) => {
+    try {
+      serializeListStateToQueryString(listState);
+      return false;
+    } catch (error) {
+      return error.message === 'URL_TOO_LONG';
+    }
   };
 
   const deserializeQueryStringToListStateWrapper = (queryString) => {
