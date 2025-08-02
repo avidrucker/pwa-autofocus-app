@@ -539,7 +539,7 @@ function App() {
   </div>;
   
   return (
-    <main className={`app h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
+    <main className={`app debug-test h-100 flex flex-column f5 montserrat ${theme === 'light' ? 'black' : 'white'}`}>
       <header className="app-header pa3 pb2 flex justify-center items-center">
         <h1 className={`ma0 f2-ns f3 fw8 tracked-custom dib ${theme === 'light' ? 'gray' : 'gray'}`}>{appName}</h1>
         
@@ -596,7 +596,7 @@ function App() {
 
       </header>
 
-      <section className="app-container relative flex flex-column h-100">
+      <section className="app-container relative flex flex-column bg-red-test">
         <form className="ph3">
           <div>
             <div className="measure-narrow ml-auto mr-auto">
@@ -618,7 +618,7 @@ function App() {
 
           {errMsg && <p className="lh-135 red ml-auto mr-auto measure-narrow ma0 pt2">{errMsg}</p>}
 
-          <section className="pt2 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto">
+          <section className="pt2 pb2 flex justify-center flex-wrap measure-wide ml-auto mr-auto bg-green-test">
             <div className="dib">
               <div className="ma1 dib"><button type="submit" 
                 title="add a new item to your list"
@@ -654,6 +654,7 @@ function App() {
           {tasks.length > 0 && renderList(tasks, activeListOffset, true)}
         </section>
 
+        {/* List length info and next actionable item*/}
         <div className="ph3 pt2 pb3">
           <p className="ma0 o-70 measure-narrow ml-auto mr-auto lh-135">
             {`You have ${tasks.length} item${tasks.length !== 1 ? 's' : ''} in your list.`}
@@ -815,7 +816,7 @@ function App() {
             </section>}
 
           {/*local storage and query params conflict resolution modal*/}
-          {showingConflictModal && <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+          {showingConflictModal && <section className={`absolute ph3 f5 top-0 w-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90 bg-blue-test'}`}>
             <section className="measure-narrow ml-auto mr-auto tl">
               <p className="ma0 lh-135">{mismatchDetectedMsg1}</p>
               <p className="fw6 ma0 pt2">1. List from the <em>link</em> address:</p>
