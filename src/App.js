@@ -333,6 +333,8 @@ function App() {
     setShowingMoreInfo(!showingMoreInfo);
     setShowingSaveModal(false);
     setShowingHelpModal(false);
+    setShowingDebugModal(false);
+    setImportErrMsg("");
     setErrMsg("");
   }
 
@@ -340,6 +342,8 @@ function App() {
     setShowingHelpModal(!showingHelpModal);
     setShowingSaveModal(false);
     setShowingMoreInfo(false);
+    setShowingDebugModal(false);
+    setImportErrMsg("");
     setErrMsg("");
   }
 
@@ -347,6 +351,7 @@ function App() {
     setShowingSaveModal(!showingSaveModal);
     setShowingMoreInfo(false);
     setShowingHelpModal(false);
+    setShowingDebugModal(false);
     setImportErrMsg("");
     setErrMsg("");
   }
@@ -358,6 +363,9 @@ function App() {
 
   const handleToggleDebugModal = () => {
     setShowingDebugModal(!showingDebugModal);
+    setShowingSaveModal(false);
+    setShowingMoreInfo(false);
+    setShowingHelpModal(false);
     setImportErrMsg("");
     setErrMsg("");
   }
