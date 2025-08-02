@@ -88,3 +88,8 @@
 .mb1-butlast:not(:last-child) {
   margin-bottom: 0.25rem;
 }
+
+.break-word {
+  word-break: break-word; /* for legacy browsers */
+  overflow-wrap: break-word; /* for modern browsers */
+}

@@ -20,7 +20,7 @@ function TodoItem({ task, isBenchmark, cancelFunc, cloneFunc, theme }) {
         {(statusToSymbol(task.status) !== null) ?
           statusToSymbol(task.status) :
           statusToSymbol(task.was)}</span>
-      <span className={`${task.status === "cancelled" && "strike"}`}>{task.text}</span>
+      <span className={`break-word ${task.status === "cancelled" && "strike"}`}>{task.text}</span>
       <div className="relative ml1 h-15 w3">
         {cancelFunc && cloneFunc &&
         <>
