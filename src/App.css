@@ -93,3 +93,7 @@
   word-break: break-word; /* for legacy browsers */
   overflow-wrap: break-word; /* for modern browsers */
 }
+
+.h0 {
+  height: 0;
+}
