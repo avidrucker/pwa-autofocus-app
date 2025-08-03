@@ -879,8 +879,8 @@ function App() {
             </section>}
 
           {/*PWA Debug Modal*/}
-          {showingDebugModal && <section className={`absolute ph3 f5 top-0 w-100 h-100 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
-            <section className="measure-narrow ml-auto mr-auto tl">
+          {showingDebugModal && <section className={`absolute ph3 f5 top-0 w-100 pb3 ${theme === 'light' ? 'bg-white-90' : 'bg-black-90'}`}>
+            <section className="measure-narrow ml-auto mr-auto tl z-1 relative">
               <div className="flex justify-between items-center">
                 <h2 className="ma0 f4 fw6">PWA Debug Information</h2>
                 <button 
@@ -929,6 +929,7 @@ function App() {
                 </button>
               </div>
             </section>
+            <button className="absolute z-0 top-0 left-0 w-100 o-0 h-100" onClick={handleToggleDebugModal} type="button">Close Debug Modal</button>
           </section>}
 
       </section>
