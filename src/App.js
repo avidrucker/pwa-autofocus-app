@@ -410,6 +410,34 @@ function App() {
     }
   }
 
+  // Function to copy a URL for a specific task list
+  const handleCopyListUrl = async (taskList) => {
+    try {
+      const queryString = serializeListStateToQueryString(taskList);
+      const fullUrl = window.location.origin + window.location.pathname + queryString;
+      
+      await navigator.clipboard.writeText(fullUrl);
+      console.log('List URL copied to clipboard');
+    } catch (error) {
+      console.error('Failed to copy list URL:', error);
+      // Fallback for older browsers
+      try {
+        const queryString = serializeListStateToQueryString(taskList);
+        const fullUrl = window.location.origin + window.location.pathname + queryString;
+        
+        const textArea = document.createElement('textarea');
+        textArea.value = fullUrl;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        console.log('List URL copied to clipboard (fallback method)');
+      } catch (fallbackError) {
+        console.error('Fallback copy also failed:', fallbackError);
+      }
+    }
+  }
+
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
     setImportErrMsg("");
@@ -807,7 +835,7 @@ function App() {
 
               <div className="pb3">
                 <h3 className="f5 fw6 ma0 mb2">Version {semVer}</h3>
-                <h3 className="f5 fw6 ma0 mb2">Debug Mode</h3>
+                <h3 className="f5 fw6 ma0 o-0 h0">Debug Mode</h3>
                 <div className="flex items-center">
                   <button
                     title={debugMode ? "Disable debug mode" : "Enable debug mode"}
@@ -861,8 +889,24 @@ function App() {
               <p className="ma0 lh-135">{mismatchDetectedMsg1}</p>
               <p className="fw6 ma0 pt2">1. List from the <em>link</em> address:</p>
               {renderList(deserializeQueryStringToListStateWrapper(window.location.search).result, queryStringListOffset)}
+              
               <p className="fw6 ma0 pt2">2. List from <em>local</em> storage:</p>
               {renderList(initialTasks, initialTasksListOffset)}
+              
+              <div className="tc pt2 pb2">
+                <button 
+                  title="Copy the link list URL to clipboard"
+                  className={`br3 f6 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`} 
+                  onClick={() => handleCopyListUrl(deserializeQueryStringToListStateWrapper(window.location.search).result)}>
+                  Copy Link URL
+                </button>
+                <button 
+                  title="Copy the local storage list URL to clipboard"
+                  className={`br3 f6 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer ma1`} 
+                  onClick={() => handleCopyListUrl(initialTasks)}>
+                  Copy Local URL
+                </button>
+              </div>
             </section>
             <div className="pb3 tc">
                 <button 
