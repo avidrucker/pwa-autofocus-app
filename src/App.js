@@ -387,6 +387,29 @@ function App() {
     saveToLocalStorage('debugMode', newDebugMode);
   }
 
+  // Function to copy current URL to clipboard
+  const handleCopyUrl = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      // You could add a temporary success message here if desired
+      console.log('URL copied to clipboard');
+    } catch (error) {
+      console.error('Failed to copy URL:', error);
+      // Fallback for older browsers
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = window.location.href;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        console.log('URL copied to clipboard (fallback method)');
+      } catch (fallbackError) {
+        console.error('Fallback copy also failed:', fallbackError);
+      }
+    }
+  }
+
   // Function to handle exporting tasks to a JSON file
   const handleExportTasks = () => {
     setImportErrMsg("");
@@ -719,6 +742,15 @@ function App() {
             <section className="relative z-1 measure-narrow ml-auto mr-auto tl">
 
               <h2 className="pb2 ph3 ma0">Import/Export</h2>
+
+              <div className="ph3 pb2">
+                <button 
+                  title="Copy the current URL to clipboard for sharing"
+                  className={`br3 w-100 f5 fw6 ba dib bw1 grow b--gray button-reset ${theme === 'light' ? 'bg-moon-gray black' : 'bg-dark-gray white'} pa2 pointer`} 
+                  onClick={handleCopyUrl}>
+                  Copy List URL
+                </button>
+              </div>
 
               <p className="ph3 ma0 lh-135">{saveInfo1}</p>
               
