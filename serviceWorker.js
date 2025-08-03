@@ -1,6 +1,6 @@
 // This is the "service worker" which can intercept network requests.
 // Version-based caching strategy for proper app updates
-const APP_VERSION = '0.1.3'; // Update this to match package.json version
+const APP_VERSION = '0.1.4'; // Update this to match package.json version
 const CACHE_NAME = `autofocus-cache-v${APP_VERSION}`;
 const RUNTIME_CACHE = `autofocus-runtime-v${APP_VERSION}`;
 
